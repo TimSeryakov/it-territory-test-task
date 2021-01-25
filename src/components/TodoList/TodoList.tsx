@@ -55,7 +55,7 @@ const Header = () => {
     return (
         <header className="text-gb-text opacity-40 focus:outline-none pb-14">
             <a href="https://youtu.be/5coefdzLlYc" target="_blank" rel="noreferrer" className="focus:outline-none">
-                <h1 className="text-4xl my-3">Watcha gonna do, whatcha gonna do</h1>
+                <h1 className="text-4xl mb-3">Watcha gonna do, whatcha gonna do</h1>
                 <h2 className="text-xl my-1">When they come for you</h2>
                 <h3 className="text-sm ">Bad boys, bad boys...</h3>
             </a>

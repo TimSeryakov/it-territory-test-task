@@ -12,9 +12,6 @@ export const TodoList = () => {
     const {todoListData} = useSelector(selector)
     const dispatch = useDispatch()
 
-// ---------------------------------------------------------------------------------------------------------------------
-
-
     const editTask = (id: string, newValue: string) => {
         dispatch(editTaskAC(id, newValue))
     }
@@ -31,7 +28,7 @@ export const TodoList = () => {
         <section>
             <Header/>
             <AddTaskInput/>
-            <main className="mt-5">
+            <main>
                 {
                     todoListData.map(task => {
                         return (
@@ -53,9 +50,10 @@ export const TodoList = () => {
 // Built-in components
 //----------------------------------------------------------------------------------------------------------------------
 
+// Just header
 const Header = () => {
     return (
-        <header className="text-gb-text opacity-40 focus:outline-none">
+        <header className="text-gb-text opacity-40 focus:outline-none pb-14">
             <a href="https://youtu.be/5coefdzLlYc" target="_blank" rel="noreferrer" className="focus:outline-none">
                 <h1 className="text-4xl my-3">Watcha gonna do, whatcha gonna do</h1>
                 <h2 className="text-xl my-1">When they come for you</h2>
@@ -65,6 +63,7 @@ const Header = () => {
     )
 }
 
+// Input for task creating
 const AddTaskInput = () => {
     const [typedText, setTypedText] = useState<string | null>()
     const dispatch = useDispatch()
@@ -88,17 +87,17 @@ const AddTaskInput = () => {
     }
 
     return (
-        <div className="mt-10 flex">
+        <div className="mt-10 mb-5 flex">
             <input value={typedText ? typedText : ""}
                    type="input"
                    placeholder="Type something..."
                    className="bg-gb-dark-medium text-gb-light border-gb-text
-                              p-3 text-2xl mx-2 border-b-2
+                              p-3 text-2xl mr-1 border-b-2
                               placeholder-gb-dark-soft focus:outline-none flex-auto"
                    onChange={inputOnChangeHandler}
                    onKeyPress={inputOnKeyPressHandler}
             />
-            <button className="mx-2 px-1 text-gb-text opacity-75 hover:opacity-100"
+            <button className="ml-1 px-1 text-gb-text opacity-75 hover:opacity-100"
                     onClick={addTask}
             >
                 <AddIcon/>

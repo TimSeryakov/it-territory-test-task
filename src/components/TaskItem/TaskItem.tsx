@@ -16,7 +16,7 @@ export const TaskItem = (props: TaskItemPropsType) => {
     const [editMode, setEditMode] = useState<boolean>(false)
 
     const styleActive = "text-gb-text text-3xl inline cursor-pointer focus:outline-none"
-    const styleDone = "text-gb-text opacity-10 text-3xl line-through inline cursor-pointer focus:outline-none"
+    const styleDone = "text-gb-text text-3xl line-through inline cursor-pointer focus:outline-none"
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -54,15 +54,13 @@ export const TaskItem = (props: TaskItemPropsType) => {
                     />
                     :
                     <TaskTitle status={props.status}
-                               styleActive={styleActive}
-                               styleDone={styleDone}
                                title={props.title}
                     />
                 }
             </div>
             <div className="inline flex items-center">
                 <button onClick={toggleEditMode}
-                        className={`${props.status === "active" ? styleActive : styleDone} p-1`}
+                        className={`${props.status === "active" ? styleActive : `${styleDone} hidden`} p-1`}
                 >
                     <EditIcon/>
                 </button>
@@ -79,13 +77,22 @@ export const TaskItem = (props: TaskItemPropsType) => {
 // Built-in components
 //----------------------------------------------------------------------------------------------------------------------
 
-const TaskTitle = (props: { status: TaskStatusType, styleActive: string, styleDone: string, title: string }) => {
+const TaskTitle = (props: { status: TaskStatusType, title: string }) => {
+
+    const styleActive = "text-gb-text text-3xl inline cursor-pointer focus:outline-none"
+    const styleDone = "text-gb-text opacity-30 text-3xl line-through inline cursor-pointer focus:outline-none"
+
     return (
-        <h2 className={props.status === "active" ? props.styleActive : props.styleDone}>
-            {props.status === "active" ? <span role="img" aria-label="active">🔥 </span> :
-                <span role="img" aria-label="done">👍🏿 </span>}
-            {props.title}
-        </h2>
+        <div className="text-3xl">
+            {
+                props.status === "active"
+                    ? <span role="img" aria-label="active">🔥 </span>
+                    : <span role="img" aria-label="done" className="opacity-50">👍🏿 </span>
+            }
+            <h2 className={props.status === "active" ? styleActive : styleDone}>
+                {props.title}
+            </h2>
+        </div>
     )
 }
 
@@ -94,14 +101,18 @@ const TaskTitleInput = (props: {
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }) => {
     return (
-        <input value={props.value}
-               type="input"
-               autoFocus
-               className="w-10/12 text-3xl border-b-2 border-brand-border text-brand-border
-                          focus:outline-none bg-brand-dark-primary"
-               onKeyPress={props.onKeyPress}
-               onChange={props.onChange}
-        />
+        <div className="text-3xl flex">
+            <span role="img" aria-label="active">🔥 </span>
+            <input value={props.value}
+                   type="input"
+                   autoFocus
+                   className="bg-gb-dark-medium text-gb-light border-gb-text
+                              border-b-2 flex-auto mr-5 ml-3
+                              placeholder-gb-dark-soft focus:outline-none flex-auto"
+                   onKeyPress={props.onKeyPress}
+                   onChange={props.onChange}
+            />
+        </div>
     )
 }
 
@@ -110,7 +121,8 @@ const TaskTitleInput = (props: {
 
 const EditIcon = () => {
     return (
-        <svg className="w-6 h-6 text-gb-dark-soft hover:text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        <svg className="w-6 h-6 text-gb-dark-soft hover:text-green-700" fill="none" stroke="currentColor"
+             viewBox="0 0 24 24"
              xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                   d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2
@@ -122,7 +134,8 @@ const EditIcon = () => {
 
 const DeleteIcon = () => {
     return (
-        <svg className="w-6 h-6 text-gb-dark-soft hover:text-red-800" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        <svg className="w-6 h-6 text-gb-dark-soft hover:text-red-800" fill="none" stroke="currentColor"
+             viewBox="0 0 24 24"
              xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                   d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5

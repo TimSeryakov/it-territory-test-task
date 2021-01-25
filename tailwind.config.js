@@ -3,11 +3,12 @@ module.exports = {
     darkMode: false, // or 'media' or 'class'
     theme: {
         extend: {
-            colors: {
-                "brand-dark-primary": "#232323",
-                "brand-dark-secondary": "#292929",
-                "brand-border": "#383838",
-                "brand-white": "#E0E0E0"
+            colors: { // gruvbox theme colors
+                "gb-dark-hard": "#1C2021",
+                "gb-dark-medium": "#282828",
+                "gb-dark-soft": "#3C3835",
+                "gb-text": "#8E7F70",
+                "gb-light": "#FFE7C9"
             }
         },
     },

@@ -7,5 +7,5 @@ body {
 }
 
 body {
-  @apply bg-brand-dark-primary w-full h-full;
+  @apply bg-gb-dark-medium h-full;
 }

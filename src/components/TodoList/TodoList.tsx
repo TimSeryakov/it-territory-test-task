@@ -7,30 +7,13 @@ import {addTaskAC, editTaskAC, removeTaskAC, toggleTaskStatusAC} from '../../red
 // ---------------------------------------------------------------------------------------------------------------------
 
 export const TodoList = () => {
-    const [typedText, setTypedText] = useState<string | null>()
+
     const selector = useCallback((state: RootStateType) => state.todolist, [])
     const {todoListData} = useSelector(selector)
     const dispatch = useDispatch()
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-    const inputOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setTypedText(e.currentTarget.value)
-    }
-
-    const inputOnKeyPressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter" && typedText) {
-            dispatch(addTaskAC(typedText))
-            setTypedText(null)
-        }
-    }
-
-    const addTask = () => {
-        if (typedText) {
-            dispatch(addTaskAC(typedText))
-            setTypedText(null)
-        }
-    }
 
     const editTask = (id: string, newValue: string) => {
         dispatch(editTaskAC(id, newValue))
@@ -46,30 +29,8 @@ export const TodoList = () => {
 
     return (
         <section>
-            <header className="text-brand-border">
-                <a href="https://youtu.be/5coefdzLlYc" target="_blank" rel="noreferrer">
-                    <h1 className="text-4xl my-3">Watcha gonna do, whatcha gonna do</h1>
-                    <h2 className="text-xl my-1">When they come for you</h2>
-                    <h3 className="text-sm ">Bad boys, bad boys...</h3>
-                </a>
-            </header>
-            <div className="mt-10">
-                <input value={typedText ? typedText : ""}
-                       type="input"
-                       placeholder="Type something..."
-                       className="border-brand-border hover:text-brand-white hover:border-brand-white rounded-md
-                                      border p-3 text-brand-white text-2xl mx-2 bg-brand-dark-primary w-9/12
-                                      placeholder-brand-dark-secondary focus:outline-none"
-                       onChange={inputOnChangeHandler}
-                       onKeyPress={inputOnKeyPressHandler}
-                />
-                <button className="border-brand-border hover:text-brand-white hover:border-brand-white rounded-md
-                                       border p-3 text-brand-border text-2xl mx-2 focus:outline-none focus:outline-none"
-                        onClick={addTask}
-                >
-                    Smack!
-                </button>
-            </div>
+            <Header/>
+            <AddTaskInput/>
             <main className="mt-5">
                 {
                     todoListData.map(task => {
@@ -87,5 +48,75 @@ export const TodoList = () => {
                 }
             </main>
         </section>
+    )
+}
+// Built-in components
+//----------------------------------------------------------------------------------------------------------------------
+
+const Header = () => {
+    return (
+        <header className="text-gb-text opacity-40 focus:outline-none">
+            <a href="https://youtu.be/5coefdzLlYc" target="_blank" rel="noreferrer" className="focus:outline-none">
+                <h1 className="text-4xl my-3">Watcha gonna do, whatcha gonna do</h1>
+                <h2 className="text-xl my-1">When they come for you</h2>
+                <h3 className="text-sm ">Bad boys, bad boys...</h3>
+            </a>
+        </header>
+    )
+}
+
+const AddTaskInput = () => {
+    const [typedText, setTypedText] = useState<string | null>()
+    const dispatch = useDispatch()
+
+    const addTask = () => {
+        if (typedText) {
+            dispatch(addTaskAC(typedText))
+            setTypedText(null)
+        }
+    }
+
+    const inputOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        setTypedText(e.currentTarget.value)
+    }
+
+    const inputOnKeyPressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter" && typedText) {
+            dispatch(addTaskAC(typedText))
+            setTypedText(null)
+        }
+    }
+
+    return (
+        <div className="mt-10 flex">
+            <input value={typedText ? typedText : ""}
+                   type="input"
+                   placeholder="Type something..."
+                   className="bg-gb-dark-medium text-gb-light border-gb-text
+                              p-3 text-2xl mx-2 border-b-2
+                              placeholder-gb-dark-soft focus:outline-none flex-auto"
+                   onChange={inputOnChangeHandler}
+                   onKeyPress={inputOnKeyPressHandler}
+            />
+            <button className="mx-2 px-1 text-gb-text opacity-75 hover:opacity-100"
+                    onClick={addTask}
+            >
+                <AddIcon/>
+            </button>
+        </div>
+    )
+}
+
+// Icons (SVG)
+//----------------------------------------------------------------------------------------------------------------------
+
+const AddIcon = () => {
+    return (
+        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+             xmlns="http://www.w3.org/2000/svg">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                  d="M15 13l-3 3m0 0l-3-3m3 3V8m0 13a9 9 0 110-18 9 9 0 010 18z"
+            />
+        </svg>
     )
 }

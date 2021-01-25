@@ -1,8 +1,8 @@
 import React, {ChangeEvent, useCallback, useState} from 'react'
 import {TaskItem} from '../TaskItem/TaskItem'
-import {RootStateType} from "../../redux/store";
-import {useDispatch, useSelector} from "react-redux";
-import {addTaskAC, editTaskAC, removeTaskAC, toggleTaskStatusAC} from '../../redux/todolist-reducer';
+import {RootStateType} from '../../redux/store'
+import {useDispatch, useSelector} from 'react-redux'
+import {addTaskAC, editTaskAC, removeTaskAC, toggleTaskStatusAC} from '../../redux/todolist-reducer'
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -57,7 +57,7 @@ const Header = () => {
             <a href="https://youtu.be/5coefdzLlYc" target="_blank" rel="noreferrer" className="focus:outline-none">
                 <h1 className="text-4xl mb-3">Watcha gonna do, whatcha gonna do</h1>
                 <h2 className="text-xl my-1">When they come for you</h2>
-                <h3 className="text-sm ">Bad boys, bad boys...</h3>
+                <h3 className="text-sm">Bad boys, bad boys...</h3>
             </a>
         </header>
     )

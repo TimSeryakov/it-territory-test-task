@@ -97,7 +97,7 @@ const AddTaskInput = () => {
                    onChange={inputOnChangeHandler}
                    onKeyPress={inputOnKeyPressHandler}
             />
-            <button className="ml-1 px-1 text-gb-text opacity-75 hover:opacity-100"
+            <button className="ml-1 px-1 text-gb-text opacity-75 hover:opacity-100 focus:outline-none"
                     onClick={addTask}
             >
                 <AddIcon/>

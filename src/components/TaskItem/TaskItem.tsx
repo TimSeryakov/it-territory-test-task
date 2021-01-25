@@ -1,6 +1,6 @@
 import React, {ChangeEvent, useState} from 'react'
 import {TaskDataType, TaskStatusType} from '../../redux/todolist-reducer'
-
+import OutsideClickHandler from 'react-outside-click-handler'
 // ---------------------------------------------------------------------------------------------------------------------
 
 type TaskItemPropsType = {
@@ -51,6 +51,7 @@ export const TaskItem = (props: TaskItemPropsType) => {
                     <TaskTitleInput value={typedText}
                                     onKeyPress={inputOnKeyPressHandler}
                                     onChange={inputOnChangeHandler}
+                                    toggleEditMode={toggleEditMode}
                     />
                     :
                     <TaskTitle status={props.status}
@@ -98,21 +99,23 @@ const TaskTitle = (props: { status: TaskStatusType, title: string }) => {
 
 const TaskTitleInput = (props: {
     value: string, onKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void,
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void, toggleEditMode: () => void
 }) => {
     return (
-        <div className="text-3xl flex">
-            <span role="img" aria-label="active">🔥 </span>
-            <input value={props.value}
-                   type="input"
-                   autoFocus
-                   className="bg-gb-dark-medium text-gb-light border-gb-text
-                              border-b-2 flex-auto mr-5 ml-3
-                              placeholder-gb-dark-soft focus:outline-none flex-auto"
-                   onKeyPress={props.onKeyPress}
-                   onChange={props.onChange}
-            />
-        </div>
+        <OutsideClickHandler onOutsideClick={props.toggleEditMode}>
+            <div className="text-3xl flex">
+                <span role="img" aria-label="active">🔥 </span>
+                <input value={props.value}
+                       type="input"
+                       autoFocus
+                       className="bg-gb-dark-medium text-gb-light border-gb-text
+                                  border-b-2 flex-auto mr-5 ml-3
+                                  placeholder-gb-dark-soft focus:outline-none flex-auto"
+                       onKeyPress={props.onKeyPress}
+                       onChange={props.onChange}
+                />
+            </div>
+        </OutsideClickHandler>
     )
 }
 

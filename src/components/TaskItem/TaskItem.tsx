@@ -124,7 +124,7 @@ const TaskTitleInput = (props: {
 
 const EditIcon = () => {
     return (
-        <svg className="w-6 h-6 text-gb-dark-soft hover:text-green-700" fill="none" stroke="currentColor"
+        <svg className="w-6 h-6 text-gb-blue hover:text-gb-blue-light opacity-70" fill="none" stroke="currentColor"
              viewBox="0 0 24 24"
              xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
@@ -137,7 +137,7 @@ const EditIcon = () => {
 
 const DeleteIcon = () => {
     return (
-        <svg className="w-6 h-6 text-gb-dark-soft hover:text-red-800" fill="none" stroke="currentColor"
+        <svg className="w-6 h-6 text-gb-red hover:text-gb-red-light opacity-70" fill="none" stroke="currentColor"
              viewBox="0 0 24 24"
              xmlns="http://www.w3.org/2000/svg">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"

@@ -67,7 +67,7 @@ const todolistReducer = (state: TodoListStateType = initialState, action: TodoLi
             const newTask: TaskDataType = {id: v1(), title: action.payload.title, status: "active"}
             return {
                 ...state,
-                todoListData: [...state.todoListData, newTask]
+                todoListData: [newTask, ...state.todoListData]
             }
         }
         case TODO.REMOVE_TASK: {

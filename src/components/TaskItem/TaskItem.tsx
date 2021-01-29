@@ -1,7 +1,7 @@
 import React, {ChangeEvent, forwardRef, Ref, useState} from 'react'
 import {TaskDataType, TaskStatusType} from '../../redux/todolist-reducer'
 import OutsideClickHandler from 'react-outside-click-handler'
-import {IItemProps} from "react-movable"
+import {IItemProps} from 'react-movable'
 
 type TaskItemPropsType = {
     removeTask: (id: string) => void
@@ -10,7 +10,7 @@ type TaskItemPropsType = {
     focused: boolean
 } & TaskDataType & IItemProps
 
-// Make draggable item (wrapped)
+// Draggable item
 export const TaskItem = forwardRef(({removeTask, toggleStatus, editTask, focused, ...props}: TaskItemPropsType, ref: Ref<HTMLLIElement>) => {
     const [typedText, setTypedText] = useState<string>(props.title)
     const [editMode, setEditMode] = useState<boolean>(false)
@@ -42,8 +42,7 @@ export const TaskItem = forwardRef(({removeTask, toggleStatus, editTask, focused
         <li {...props}
             ref={ref}
             className={`${focused ? "bg-gb-dark-soft" : "bg-gb-dark-medium"} 
-                        flex justify-between items-center px-2 py-4 my-0.5 rounded-md
-                        `
+                        flex justify-between items-center px-2 py-4 my-0.5 rounded-md`
             }
         >
             <DragHandler/>
@@ -111,7 +110,6 @@ const TaskTitleInput = (props: {
 }) => {
     return (
         <OutsideClickHandler onOutsideClick={props.toggleEditMode}>
-
             <div className="text-3xl flex">
                 <span role="img" aria-label="active">🔥 </span>
                 <input value={props.value}
@@ -127,6 +125,15 @@ const TaskTitleInput = (props: {
         </OutsideClickHandler>
     )
 }
+
+const DragHandler = () => {
+    return (
+        <div className="py-1 grabbable">
+            <DragHandlerIcon/>
+        </div>
+    )
+}
+
 
 // Icons (SVG)
 //----------------------------------------------------------------------------------------------------------------------
@@ -165,13 +172,5 @@ const DragHandlerIcon = () => {
                      2 0 0 0 13 6zm0 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 14z"
             />
         </svg>
-    )
-}
-
-const DragHandler = () => {
-    return (
-        <div className="py-1 grabbable">
-            <DragHandlerIcon/>
-        </div>
     )
 }

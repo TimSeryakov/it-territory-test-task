@@ -29,6 +29,7 @@ export const TodoList = () => {
             <Header/>
             <AddTaskInput/>
             <main>
+                <ul>
                 {
                     todoListData.map(task => {
                         return (
@@ -43,6 +44,7 @@ export const TodoList = () => {
                         )
                     })
                 }
+                </ul>
             </main>
         </section>
     )

@@ -1,6 +1,7 @@
 import React, {ChangeEvent, useState} from 'react'
 import {TaskDataType, TaskStatusType} from '../../redux/todolist-reducer'
 import OutsideClickHandler from 'react-outside-click-handler'
+
 // ---------------------------------------------------------------------------------------------------------------------
 
 type TaskItemPropsType = {
@@ -43,7 +44,7 @@ export const TaskItem = (props: TaskItemPropsType) => {
 // ---------------------------------------------------------------------------------------------------------------------
 
     return (
-        <div className="flex justify-between py-4">
+        <li className="flex justify-between py-4">
             <div className="cursor-pointer w-full"
                  onClick={() => props.toggleStatus(props.id)}
             >
@@ -71,7 +72,7 @@ export const TaskItem = (props: TaskItemPropsType) => {
                     <DeleteIcon/>
                 </button>
             </div>
-        </div>
+        </li>
     )
 }
 
@@ -98,8 +99,10 @@ const TaskTitle = (props: { status: TaskStatusType, title: string }) => {
 }
 
 const TaskTitleInput = (props: {
-    value: string, onKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void,
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void, toggleEditMode: () => void
+    value: string,
+    onKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void,
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+    toggleEditMode: () => void
 }) => {
     return (
         <OutsideClickHandler onOutsideClick={props.toggleEditMode}>

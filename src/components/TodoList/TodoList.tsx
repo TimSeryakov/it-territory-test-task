@@ -36,7 +36,9 @@ export const TodoList = () => {
                         dispatch(changeTaskOrderAC(oldIndex, newIndex))
                     }
                     renderList={({children, props}) => {
-                        return <ul {...props}>{children}</ul>
+                        return <ul {...props}>
+                            {children}
+                        </ul>
                     }}
                     renderItem={({value, props}) => {
                         return <TaskItem {...props}

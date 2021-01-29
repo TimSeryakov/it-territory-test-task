@@ -1,3 +1,11 @@
 body {
   @apply bg-gb-dark-medium h-full min-h-screen flex flex-col justify-center items-center
 }
+
+.grabbable {
+  cursor: grab;
+}
+
+.grabbable:active {
+  cursor: grabbing;
+}

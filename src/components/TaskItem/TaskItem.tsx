@@ -52,9 +52,9 @@ export const TaskItem = forwardRef(
                 ref={ref}
                 className="flex justify-between items-center py-4"
             >
-                <DrugHandlerIcon/>
-                <div className="cursor-pointer w-full"
-                     onClick={() => props.toggleStatus(props.id)}
+                <DragHandler/>
+                <button className="cursor-pointer w-full focus:outline-none"
+                        onClick={() => props.toggleStatus(props.id)}
                 >
                     {editMode ?
                         <TaskTitleInput value={typedText}
@@ -67,7 +67,7 @@ export const TaskItem = forwardRef(
                                    title={props.title}
                         />
                     }
-                </div>
+                </button>
                 <div className="inline flex items-center">
                     <button onClick={toggleEditMode}
                             className={`${props.status === "active" ? styleActive : `${styleDone} hidden`} p-1`}
@@ -91,16 +91,18 @@ export const TaskItem = forwardRef(
 
 const TaskTitle = (props: { status: TaskStatusType, title: string }) => {
 
-    const styleActive = "text-gb-text text-3xl inline cursor-pointer focus:outline-none"
-    const styleDone = "text-gb-text opacity-30 text-3xl line-through inline cursor-pointer focus:outline-none"
+    const styleActive = "text-gb-text inline cursor-pointer focus:outline-none text-lg md:text-3xl"
+    const styleDone = "text-gb-text opacity-30 line-through inline cursor-pointer focus:outline-none text-lg md:text-3xl"
 
     return (
-        <div className="text-3xl">
-            {
-                props.status === "active"
-                    ? <span role="img" aria-label="active">🔥 </span>
-                    : <span role="img" aria-label="done" className="opacity-50">👍🏿 </span>
-            }
+        <div className="text-3xl flex items-center">
+            <div className="pr-1">
+                {
+                    props.status === "active"
+                        ? <span role="img" aria-label="active">🔥 </span>
+                        : <span role="img" aria-label="done" className="opacity-50">👍🏿 </span>
+                }
+            </div>
             <h2 className={props.status === "active" ? styleActive : styleDone}>
                 {props.title}
             </h2>
@@ -162,13 +164,21 @@ const DeleteIcon = () => {
     )
 }
 
-const DrugHandlerIcon = () => {
+const DragHandlerIcon = () => {
     return (
-        <svg className="w-6 h-6 mt-2 mr-1 text-gb-text opacity-40" fill="currentColor">
+        <svg className="w-6 h-6 mt-2 text-gb-text opacity-40" fill="currentColor">
             <path d="M7 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 2zm0 6a2 2 0 1 0 .001 4.001A2
                      2 0 0 0 7 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 14zm6-8a2 2 0 1 0-.001-4.001A2
                      2 0 0 0 13 6zm0 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 14z"
             />
         </svg>
+    )
+}
+
+const DragHandler = () => {
+    return (
+        <div className="py-1 grabbable">
+            <DragHandlerIcon/>
+        </div>
     )
 }

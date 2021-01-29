@@ -16,76 +16,75 @@ type TaskItemPropsType = {
 
 // Make draggable item (wrapped)
 export const TaskItem = forwardRef(({removeTask, toggleStatus, editTask, focused, ...props}: TaskItemPropsType, ref: Ref<HTMLLIElement>) => {
-        const [typedText, setTypedText] = useState<string>(props.title)
-        const [editMode, setEditMode] = useState<boolean>(false)
+    const [typedText, setTypedText] = useState<string>(props.title)
+    const [editMode, setEditMode] = useState<boolean>(false)
 
-        const styleActive = "text-gb-text text-3xl inline cursor-pointer focus:outline-none"
-        const styleDone = "text-gb-text text-3xl line-through inline cursor-pointer focus:outline-none"
-
-// ---------------------------------------------------------------------------------------------------------------------
-
-        const inputOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-            setTypedText(e.currentTarget.value)
-        }
-
-        const inputOnKeyPressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
-            if (e.key === "Enter" && typedText) {
-                editTask(props.id, typedText)
-                setEditMode(false)
-            }
-        }
-
-        const toggleEditMode = () => {
-            if (editMode) {
-                editTask(props.id, typedText)
-                setEditMode(false)
-            } else {
-                setEditMode(true)
-            }
-        }
+    const styleActive = "text-gb-text text-3xl inline cursor-pointer focus:outline-none"
+    const styleDone = "text-gb-text text-3xl line-through inline cursor-pointer focus:outline-none"
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-        return (
-            <li {...props}
-                ref={ref}
-                className={`${focused ? "bg-gb-dark-soft" : "bg-gb-dark-medium"} 
-                            flex justify-between items-center px-2 py-4 my-0.5 rounded-md
-                            `
-                }
-            >
-                <DragHandler/>
-                <button className="cursor-pointer w-full focus:outline-none"
-                        onClick={() => toggleStatus(props.id)}
-                >
-                    {editMode ?
-                        <TaskTitleInput value={typedText}
-                                        onKeyPress={inputOnKeyPressHandler}
-                                        onChange={inputOnChangeHandler}
-                                        toggleEditMode={toggleEditMode}
-                        />
-                        :
-                        <TaskTitle status={props.status}
-                                   title={props.title}
-                        />
-                    }
-                </button>
-                <div className="inline flex items-center">
-                    <button onClick={toggleEditMode}
-                            className={`${props.status === "active" ? styleActive : `${styleDone} hidden`} p-1`}
-                    >
-                        <EditIcon/>
-                    </button>
-                    <button onClick={() => removeTask(props.id)}
-                            className={`${props.status === "active" ? styleActive : styleDone} p-1`}
-                    >
-                        <DeleteIcon/>
-                    </button>
-                </div>
-            </li>
-        )
+    const inputOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+        setTypedText(e.currentTarget.value)
     }
-)
+
+    const inputOnKeyPressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter" && typedText) {
+            editTask(props.id, typedText)
+            setEditMode(false)
+        }
+    }
+
+    const toggleEditMode = () => {
+        if (editMode) {
+            editTask(props.id, typedText)
+            setEditMode(false)
+        } else {
+            setEditMode(true)
+        }
+    }
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+    return (
+        <li {...props}
+            ref={ref}
+            className={`${focused ? "bg-gb-dark-soft" : "bg-gb-dark-medium"} 
+                        flex justify-between items-center px-2 py-4 my-0.5 rounded-md
+                        `
+            }
+        >
+            <DragHandler/>
+            <button className="cursor-pointer w-full focus:outline-none"
+                    onClick={() => toggleStatus(props.id)}
+            >
+                {editMode ?
+                    <TaskTitleInput value={typedText}
+                                    onKeyPress={inputOnKeyPressHandler}
+                                    onChange={inputOnChangeHandler}
+                                    toggleEditMode={toggleEditMode}
+                    />
+                    :
+                    <TaskTitle status={props.status}
+                               title={props.title}
+                    />
+                }
+            </button>
+            <div className="inline flex items-center">
+                <button onClick={toggleEditMode}
+                        className={`${props.status === "active" ? styleActive : `${styleDone} hidden`} p-1`}
+                >
+                    <EditIcon/>
+                </button>
+                <button onClick={() => removeTask(props.id)}
+                        className={`${props.status === "active" ? styleActive : styleDone} p-1`}
+                >
+                    <DeleteIcon/>
+                </button>
+            </div>
+        </li>
+    )
+})
 
 //----------------------------------------------------------------------------------------------------------------------
 // Built-in components

@@ -5,10 +5,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {addTaskAC, changeTaskOrderAC, editTaskAC, removeTaskAC, toggleTaskStatusAC} from '../../redux/todolist-reducer'
 import {List} from 'react-movable'
 
-// ---------------------------------------------------------------------------------------------------------------------
-
 export const TodoList = () => {
-
     const selector = useCallback((state: RootStateType) => state.todolist, [])
     const {todoListData} = useSelector(selector)
     const dispatch = useDispatch()
@@ -22,8 +19,6 @@ export const TodoList = () => {
     const removeTask = (id: string) => {
         dispatch(removeTaskAC(id))
     }
-
-// ---------------------------------------------------------------------------------------------------------------------
 
     return (
         <section className="my-12">
@@ -61,7 +56,6 @@ export const TodoList = () => {
 // Built-in components
 //----------------------------------------------------------------------------------------------------------------------
 
-// Just header
 const Header = () => {
     return (
         <header className="text-gb-text opacity-40 focus:outline-none pb-14">
@@ -74,7 +68,6 @@ const Header = () => {
     )
 }
 
-// Input for task creating
 const AddTaskInput = () => {
     const [typedText, setTypedText] = useState<string | null>()
     const dispatch = useDispatch()

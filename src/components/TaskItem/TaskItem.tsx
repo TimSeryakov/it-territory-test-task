@@ -3,16 +3,12 @@ import {TaskDataType, TaskStatusType} from '../../redux/todolist-reducer'
 import OutsideClickHandler from 'react-outside-click-handler'
 import {IItemProps} from "react-movable"
 
-// ---------------------------------------------------------------------------------------------------------------------
-
 type TaskItemPropsType = {
     removeTask: (id: string) => void
     toggleStatus: (id: string) => void
     editTask: (id: string, newValue: string) => void
     focused: boolean
 } & TaskDataType & IItemProps
-
-// ---------------------------------------------------------------------------------------------------------------------
 
 // Make draggable item (wrapped)
 export const TaskItem = forwardRef(({removeTask, toggleStatus, editTask, focused, ...props}: TaskItemPropsType, ref: Ref<HTMLLIElement>) => {
@@ -21,8 +17,6 @@ export const TaskItem = forwardRef(({removeTask, toggleStatus, editTask, focused
 
     const styleActive = "text-gb-text text-3xl inline cursor-pointer focus:outline-none"
     const styleDone = "text-gb-text text-3xl line-through inline cursor-pointer focus:outline-none"
-
-// ---------------------------------------------------------------------------------------------------------------------
 
     const inputOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
         setTypedText(e.currentTarget.value)
@@ -43,8 +37,6 @@ export const TaskItem = forwardRef(({removeTask, toggleStatus, editTask, focused
             setEditMode(true)
         }
     }
-
-// ---------------------------------------------------------------------------------------------------------------------
 
     return (
         <li {...props}

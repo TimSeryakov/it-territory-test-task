@@ -1,5 +1,5 @@
-import {v1} from "uuid"
-import {arrayMove} from "react-movable"
+import {v1} from 'uuid'
+import {arrayMove} from 'react-movable'
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Init State

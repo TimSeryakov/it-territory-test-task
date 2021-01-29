@@ -2,7 +2,8 @@ import React, {ChangeEvent, useCallback, useState} from 'react'
 import {TaskItem} from '../TaskItem/TaskItem'
 import {RootStateType} from '../../redux/store'
 import {useDispatch, useSelector} from 'react-redux'
-import {addTaskAC, editTaskAC, removeTaskAC, toggleTaskStatusAC} from '../../redux/todolist-reducer'
+import {addTaskAC, changeTaskOrderAC, editTaskAC, removeTaskAC, toggleTaskStatusAC} from '../../redux/todolist-reducer'
+import {List} from 'react-movable'
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -25,30 +26,34 @@ export const TodoList = () => {
 // ---------------------------------------------------------------------------------------------------------------------
 
     return (
-        <section>
+        <section className="my-12">
             <Header/>
             <AddTaskInput/>
             <main>
-                <ul>
-                    {
-                        todoListData.map(task => {
-                            return (
-                                <TaskItem id={task.id}
-                                          key={task.id}
-                                          status={task.status}
-                                          title={task.title}
-                                          removeTask={removeTask}
-                                          toggleStatus={toggleStatus}
-                                          editTask={editTask}
-                                />
-                            )
-                        })
+                <List
+                    values={todoListData}
+                    onChange={({oldIndex, newIndex}) =>
+                        dispatch(changeTaskOrderAC(oldIndex, newIndex))
                     }
-                </ul>
+                    renderList={({children, props}) => {
+                        return <ul {...props}>{children}</ul>
+                    }}
+                    renderItem={({value, props}) => {
+                        return <TaskItem {...props}
+                                         id={value.id}
+                                         status={value.status}
+                                         title={value.title}
+                                         removeTask={removeTask}
+                                         toggleStatus={toggleStatus}
+                                         editTask={editTask}
+                        />
+                    }}
+                />
             </main>
         </section>
     )
 }
+//----------------------------------------------------------------------------------------------------------------------
 // Built-in components
 //----------------------------------------------------------------------------------------------------------------------
 

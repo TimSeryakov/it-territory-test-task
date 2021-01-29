@@ -1,4 +1,5 @@
 import {v1} from "uuid"
+import {arrayMove} from "react-movable"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Init State
@@ -41,6 +42,7 @@ export type TodoListActionTypes =
     | ReturnType<typeof removeTaskAC>
     | ReturnType<typeof toggleTaskStatusAC>
     | ReturnType<typeof editTaskAC>
+    | ReturnType<typeof changeTaskOrderAC>
 
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -51,7 +53,8 @@ enum TODO {
     ADD_TASK = "TODO/ADD_TASK",
     REMOVE_TASK = "TODO/REMOVE_TASK",
     TOGGLE_TASK_STATUS = "TODO/TOGGLE_TASK_STATUS",
-    EDIT_TASK = "TODO/EDIT_TASK"
+    EDIT_TASK = "TODO/EDIT_TASK",
+    CHANGE_TASKS_ORDER = "TODO/CHANGE_TASKS_ORDER"
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -79,7 +82,7 @@ const todolistReducer = (state: TodoListStateType = initialState, action: TodoLi
                 todoListData: state.todoListData
                     .map(task => task.id === action.payload.id
                         ?
-                        { ...task, status: task.status === "active" ? "done" : "active" }
+                        {...task, status: task.status === "active" ? "done" : "active"}
                         :
                         task
                     )
@@ -91,10 +94,20 @@ const todolistReducer = (state: TodoListStateType = initialState, action: TodoLi
                 todoListData: state.todoListData
                     .map(task => task.id === action.payload.id
                         ?
-                        { ...task, title: action.payload.newValue }
+                        {...task, title: action.payload.newValue}
                         :
                         task
                     )
+            }
+        }
+        case TODO.CHANGE_TASKS_ORDER: {
+            return {
+                ...state,
+                todoListData: arrayMove<TaskDataType>(
+                    state.todoListData,
+                    action.payload.oldIndex,
+                    action.payload.newIndex
+                )
             }
         }
         default:
@@ -118,6 +131,8 @@ export const toggleTaskStatusAC = (id: string) =>
 export const editTaskAC = (id: string, newValue: string) =>
     ({type: TODO.EDIT_TASK, payload: {id, newValue}}) as const
 
+export const changeTaskOrderAC = (oldIndex: number, newIndex: number) =>
+    ({type: TODO.CHANGE_TASKS_ORDER, payload: {oldIndex, newIndex}}) as const
 
 export default todolistReducer
 

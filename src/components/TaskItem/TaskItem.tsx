@@ -1,6 +1,7 @@
-import React, {ChangeEvent, useState} from 'react'
+import React, {ChangeEvent, forwardRef, Ref, useState} from 'react'
 import {TaskDataType, TaskStatusType} from '../../redux/todolist-reducer'
 import OutsideClickHandler from 'react-outside-click-handler'
+import {IItemProps} from "react-movable"
 
 // ---------------------------------------------------------------------------------------------------------------------
 
@@ -12,71 +13,79 @@ type TaskItemPropsType = {
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-export const TaskItem = (props: TaskItemPropsType) => {
-    const [typedText, setTypedText] = useState<string>(props.title)
-    const [editMode, setEditMode] = useState<boolean>(false)
+// Make draggable item (wrapped)
+export const TaskItem = forwardRef(
+    ({...props}: IItemProps & TaskItemPropsType, ref: Ref<HTMLLIElement>
+    ) => {
+        const [typedText, setTypedText] = useState<string>(props.title)
+        const [editMode, setEditMode] = useState<boolean>(false)
 
-    const styleActive = "text-gb-text text-3xl inline cursor-pointer focus:outline-none"
-    const styleDone = "text-gb-text text-3xl line-through inline cursor-pointer focus:outline-none"
-
-// ---------------------------------------------------------------------------------------------------------------------
-
-    const inputOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-        setTypedText(e.currentTarget.value)
-    }
-
-    const inputOnKeyPressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter" && typedText) {
-            props.editTask(props.id, typedText)
-            setEditMode(false)
-        }
-    }
-
-    const toggleEditMode = () => {
-        if (editMode) {
-            props.editTask(props.id, typedText)
-            setEditMode(false)
-        } else {
-            setEditMode(true)
-        }
-    }
+        const styleActive = "text-gb-text text-3xl inline cursor-pointer focus:outline-none"
+        const styleDone = "text-gb-text text-3xl line-through inline cursor-pointer focus:outline-none"
 
 // ---------------------------------------------------------------------------------------------------------------------
 
-    return (
-        <li className="flex justify-between items-center py-4">
-            <DrugHandlerIcon/>
-            <div className="cursor-pointer w-full"
-                 onClick={() => props.toggleStatus(props.id)}
+        const inputOnChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
+            setTypedText(e.currentTarget.value)
+        }
+
+        const inputOnKeyPressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === "Enter" && typedText) {
+                props.editTask(props.id, typedText)
+                setEditMode(false)
+            }
+        }
+
+        const toggleEditMode = () => {
+            if (editMode) {
+                props.editTask(props.id, typedText)
+                setEditMode(false)
+            } else {
+                setEditMode(true)
+            }
+        }
+
+// ---------------------------------------------------------------------------------------------------------------------
+
+        return (
+            <li {...props}
+                ref={ref}
+                className="flex justify-between items-center py-4"
             >
-                {editMode ?
-                    <TaskTitleInput value={typedText}
-                                    onKeyPress={inputOnKeyPressHandler}
-                                    onChange={inputOnChangeHandler}
-                                    toggleEditMode={toggleEditMode}
-                    />
-                    :
-                    <TaskTitle status={props.status}
-                               title={props.title}
-                    />
-                }
-            </div>
-            <div className="inline flex items-center">
-                <button onClick={toggleEditMode}
-                        className={`${props.status === "active" ? styleActive : `${styleDone} hidden`} p-1`}
+                <DrugHandlerIcon/>
+                <div className="cursor-pointer w-full"
+                     onClick={() => props.toggleStatus(props.id)}
                 >
-                    <EditIcon/>
-                </button>
-                <button onClick={() => props.removeTask(props.id)}
-                        className={`${props.status === "active" ? styleActive : styleDone} p-1`}
-                >
-                    <DeleteIcon/>
-                </button>
-            </div>
-        </li>
-    )
-}
+                    {editMode ?
+                        <TaskTitleInput value={typedText}
+                                        onKeyPress={inputOnKeyPressHandler}
+                                        onChange={inputOnChangeHandler}
+                                        toggleEditMode={toggleEditMode}
+                        />
+                        :
+                        <TaskTitle status={props.status}
+                                   title={props.title}
+                        />
+                    }
+                </div>
+                <div className="inline flex items-center">
+                    <button onClick={toggleEditMode}
+                            className={`${props.status === "active" ? styleActive : `${styleDone} hidden`} p-1`}
+                    >
+                        <EditIcon/>
+                    </button>
+                    <button onClick={() => props.removeTask(props.id)}
+                            className={`${props.status === "active" ? styleActive : styleDone} p-1`}
+                    >
+                        <DeleteIcon/>
+                    </button>
+                </div>
+            </li>
+        )
+    }
+)
 
+//----------------------------------------------------------------------------------------------------------------------
 // Built-in components
 //----------------------------------------------------------------------------------------------------------------------
 

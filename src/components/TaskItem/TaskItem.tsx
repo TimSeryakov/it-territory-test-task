@@ -44,7 +44,8 @@ export const TaskItem = (props: TaskItemPropsType) => {
 // ---------------------------------------------------------------------------------------------------------------------
 
     return (
-        <li className="flex justify-between py-4">
+        <li className="flex justify-between items-center py-4">
+            <DrugHandlerIcon/>
             <div className="cursor-pointer w-full"
                  onClick={() => props.toggleStatus(props.id)}
             >
@@ -106,6 +107,7 @@ const TaskTitleInput = (props: {
 }) => {
     return (
         <OutsideClickHandler onOutsideClick={props.toggleEditMode}>
+
             <div className="text-3xl flex">
                 <span role="img" aria-label="active">🔥 </span>
                 <input value={props.value}
@@ -146,6 +148,19 @@ const DeleteIcon = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                   d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5
                      7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+            />
+        </svg>
+    )
+}
+
+
+const DrugHandlerIcon = () => {
+    return (
+        <svg className="w-6 h-6 mt-2 mr-1 text-gb-text opacity-40" fill="currentColor">
+            <path
+                  d="M7 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 2zm0 6a2 2 0 1 0 .001 4.001A2
+                     2 0 0 0 7 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 14zm6-8a2 2 0 1 0-.001-4.001A2
+                     2 0 0 0 13 6zm0 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 8zm0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 14z"
             />
         </svg>
     )

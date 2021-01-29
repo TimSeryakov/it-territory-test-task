@@ -30,20 +30,20 @@ export const TodoList = () => {
             <AddTaskInput/>
             <main>
                 <ul>
-                {
-                    todoListData.map(task => {
-                        return (
-                            <TaskItem id={task.id}
-                                      key={task.id}
-                                      status={task.status}
-                                      title={task.title}
-                                      removeTask={removeTask}
-                                      toggleStatus={toggleStatus}
-                                      editTask={editTask}
-                            />
-                        )
-                    })
-                }
+                    {
+                        todoListData.map(task => {
+                            return (
+                                <TaskItem id={task.id}
+                                          key={task.id}
+                                          status={task.status}
+                                          title={task.title}
+                                          removeTask={removeTask}
+                                          toggleStatus={toggleStatus}
+                                          editTask={editTask}
+                                />
+                            )
+                        })
+                    }
                 </ul>
             </main>
         </section>

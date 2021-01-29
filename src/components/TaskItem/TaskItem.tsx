@@ -50,7 +50,7 @@ export const TaskItem = forwardRef(
         return (
             <li {...props}
                 ref={ref}
-                className="flex justify-between items-center py-4"
+                className="flex justify-between items-center py-4 bg-gb-dark-medium rounded-md"
             >
                 <DragHandler/>
                 <button className="cursor-pointer w-full focus:outline-none"

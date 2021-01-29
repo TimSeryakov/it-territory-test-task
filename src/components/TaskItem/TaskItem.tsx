@@ -9,14 +9,13 @@ type TaskItemPropsType = {
     removeTask: (id: string) => void
     toggleStatus: (id: string) => void
     editTask: (id: string, newValue: string) => void
-} & TaskDataType
+    focused: boolean
+} & TaskDataType & IItemProps
 
 // ---------------------------------------------------------------------------------------------------------------------
 
 // Make draggable item (wrapped)
-export const TaskItem = forwardRef(
-    ({...props}: IItemProps & TaskItemPropsType, ref: Ref<HTMLLIElement>
-    ) => {
+export const TaskItem = forwardRef(({removeTask, toggleStatus, editTask, focused, ...props}: TaskItemPropsType, ref: Ref<HTMLLIElement>) => {
         const [typedText, setTypedText] = useState<string>(props.title)
         const [editMode, setEditMode] = useState<boolean>(false)
 
@@ -31,14 +30,14 @@ export const TaskItem = forwardRef(
 
         const inputOnKeyPressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
             if (e.key === "Enter" && typedText) {
-                props.editTask(props.id, typedText)
+                editTask(props.id, typedText)
                 setEditMode(false)
             }
         }
 
         const toggleEditMode = () => {
             if (editMode) {
-                props.editTask(props.id, typedText)
+                editTask(props.id, typedText)
                 setEditMode(false)
             } else {
                 setEditMode(true)
@@ -50,11 +49,14 @@ export const TaskItem = forwardRef(
         return (
             <li {...props}
                 ref={ref}
-                className="flex justify-between items-center py-4 bg-gb-dark-medium rounded-md"
+                className={`${focused ? "bg-gb-dark-soft" : "bg-gb-dark-medium"} 
+                            flex justify-between items-center px-2 py-4 my-0.5 rounded-md
+                            `
+                }
             >
                 <DragHandler/>
                 <button className="cursor-pointer w-full focus:outline-none"
-                        onClick={() => props.toggleStatus(props.id)}
+                        onClick={() => toggleStatus(props.id)}
                 >
                     {editMode ?
                         <TaskTitleInput value={typedText}
@@ -74,7 +76,7 @@ export const TaskItem = forwardRef(
                     >
                         <EditIcon/>
                     </button>
-                    <button onClick={() => props.removeTask(props.id)}
+                    <button onClick={() => removeTask(props.id)}
                             className={`${props.status === "active" ? styleActive : styleDone} p-1`}
                     >
                         <DeleteIcon/>

@@ -31,6 +31,7 @@ export const TodoList = () => {
             <AddTaskInput/>
             <main>
                 <List
+                    lockVertically
                     values={todoListData}
                     onChange={({oldIndex, newIndex}) =>
                         dispatch(changeTaskOrderAC(oldIndex, newIndex))
@@ -40,7 +41,7 @@ export const TodoList = () => {
                             {children}
                         </ul>
                     }}
-                    renderItem={({value, props}) => {
+                    renderItem={({value, props, isDragged, isSelected}) => {
                         return <TaskItem {...props}
                                          id={value.id}
                                          status={value.status}
@@ -48,6 +49,7 @@ export const TodoList = () => {
                                          removeTask={removeTask}
                                          toggleStatus={toggleStatus}
                                          editTask={editTask}
+                                         focused={isDragged || isSelected}
                         />
                     }}
                 />
@@ -96,7 +98,7 @@ const AddTaskInput = () => {
     }
 
     return (
-        <div className="mt-10 mb-5 flex">
+        <div className="mt-10 mb-5 flex px-2">
             <input value={typedText ? typedText : ""}
                    type="input"
                    placeholder="Type something..."

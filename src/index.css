@@ -3,9 +3,9 @@ body {
 }
 
 .grabbable {
-  cursor: grab;
+  cursor: grab
 }
 
 .grabbable:active {
-  cursor: grabbing;
+  cursor: grabbing
 }

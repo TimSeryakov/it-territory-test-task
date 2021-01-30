@@ -4,11 +4,11 @@ import {RootStateType} from '../../redux/store'
 import {useDispatch, useSelector} from 'react-redux'
 import {addTaskAC, editTaskAC, removeTaskAC, toggleTaskStatusAC, updateTasksOrderTC} from '../../redux/todolist-reducer'
 import {List} from 'react-movable'
-import {Preloader} from "../common/Preloader/Preloader";
+import {Preloader} from '../common/Preloader/Preloader'
 
 export const TodoList = () => {
-    const selector = useCallback((state: RootStateType) => state.todolist, [])
-    const {tasksData} = useSelector(selector)
+    const taskSelector = useCallback((state: RootStateType) => state.todolist, [])
+    const {tasksData, isFetching} = useSelector(taskSelector)
     const dispatch = useDispatch()
 
     const editTask = (id: string, newValue: string) => {
@@ -23,35 +23,42 @@ export const TodoList = () => {
 
     return (
         <section className="my-12">
-            <Header/>
+            <Header isFetching={isFetching && tasksData.length !== 0}/>
             <AddTaskInput/>
-            <main>
-                <List
-                    lockVertically
-                    values={tasksData}
-                    onChange={({oldIndex, newIndex}) =>
-                        // dispatch(changeTaskOrderAC(oldIndex, newIndex))
-                        dispatch(updateTasksOrderTC(oldIndex, newIndex))
-                    }
-                    renderList={({children, props}) => {
-                        return <ul {...props}>
-                            {children}
-                        </ul>
-                    }}
-                    renderItem={({value, props, isDragged, isSelected}) => {
-                        return <TaskItem {...props}
-                                         id={value.id}
-                                         status={value.status}
-                                         title={value.title}
-                                         order={value.order}
-                                         removeTask={removeTask}
-                                         toggleStatus={toggleStatus}
-                                         editTask={editTask}
-                                         focused={isDragged || isSelected}
-                        />
-                    }}
-                />
-            </main>
+            {tasksData.length === 0
+                ?
+                <div className="flex justify-center items-center h-96 py-24">
+                    <Preloader message="Requesting data..."/>
+                </div>
+                :
+                <main>
+                    <List
+                        lockVertically
+                        values={tasksData}
+                        onChange={({oldIndex, newIndex}) =>
+                            // dispatch(changeTaskOrderAC(oldIndex, newIndex))
+                            dispatch(updateTasksOrderTC(oldIndex, newIndex))
+                        }
+                        renderList={({children, props}) => {
+                            return <ul {...props}>
+                                {children}
+                            </ul>
+                        }}
+                        renderItem={({value, props, isDragged, isSelected}) => {
+                            return <TaskItem {...props}
+                                             id={value.id}
+                                             status={value.status}
+                                             title={value.title}
+                                             order={value.order}
+                                             removeTask={removeTask}
+                                             toggleStatus={toggleStatus}
+                                             editTask={editTask}
+                                             focused={isDragged || isSelected}
+                            />
+                        }}
+                    />
+                </main>
+            }
         </section>
     )
 }
@@ -59,9 +66,7 @@ export const TodoList = () => {
 // Built-in components
 //----------------------------------------------------------------------------------------------------------------------
 
-const Header = () => {
-    const selector = useCallback((state: RootStateType) => state.todolist, [])
-    const {isFetching} = useSelector(selector)
+const Header = (props: { isFetching: boolean }) => {
 
     return (
         <header className="text-gb-text opacity-40 focus:outline-none mb-14 relative">
@@ -71,7 +76,7 @@ const Header = () => {
                 <h3 className="text-sm">Bad boys, bad boys...</h3>
             </a>
             <div className="inline-block text-blue-50 absolute bottom-0 right-0 mb-1 mr-12">
-                {isFetching && <Preloader message="Syncing..."/>}
+                {props.isFetching && <Preloader message="Syncing..."/>}
             </div>
         </header>
     )

@@ -2,23 +2,15 @@ import {v1} from 'uuid'
 import {arrayMove} from 'react-movable'
 import {ThunkDispatchType} from './store'
 import {TASKS_API} from '../api/api'
-import { NOTIFICATION_MESSAGES, setNotificationMessageAC } from './notification-reducer'
-import {batch, tasksCollectionRef} from '../api/firebase'
+import {NOTIFICATION_MESSAGES, setNotificationMessageAC} from './notification-reducer'
+import {tasksCollectionRef} from '../api/firebase'
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Init State
 // ---------------------------------------------------------------------------------------------------------------------
 
 export const initialState: TodoListStateType = {
-    tasksData: [
-        {id: v1(), order: 0, title: "Grab the gun", status: "active"},
-        {id: v1(), order: 1, title: "Check the clip, are there any bullets", status: "active"},
-        {id: v1(), order: 2, title: "Take a look into chamber", status: "active"},
-        {id: v1(), order: 3, title: "Cock the shutter", status: "active"},
-        {id: v1(), order: 4, title: "Remove the safety catch", status: "active"},
-        {id: v1(), order: 5, title: "Take aim", status: "active"},
-        {id: v1(), order: 6, title: "Decide if you're going to shoot", status: "active"}
-    ],
+    tasksData: [],
     isFetching: false
 }
 
@@ -30,6 +22,7 @@ export type TodoListStateType = {
     tasksData: TaskDataType[]
     isFetching: boolean
 }
+
 
 export type TaskDataType = {
     id: string

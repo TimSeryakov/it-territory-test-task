@@ -46,7 +46,7 @@ export const TaskItem = forwardRef(({removeTask, toggleStatus, editTask, focused
             }
         >
             <DragHandler/>
-            <button className="cursor-pointer w-full focus:outline-none"
+            <button className="cursor-pointer w-full focus:outline-none ml-1"
                     onClick={() => toggleStatus(props.id)}
             >
                 {editMode ?
@@ -61,7 +61,7 @@ export const TaskItem = forwardRef(({removeTask, toggleStatus, editTask, focused
                     />
                 }
             </button>
-            <div className="inline flex items-center">
+            <div className="inline flex items-center mt-2 ml-6">
                 <button onClick={toggleEditMode}
                         className={`${props.status === "active" ? styleActive : `${styleDone} hidden`} p-1`}
                 >

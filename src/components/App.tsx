@@ -1,7 +1,7 @@
 import React from 'react'
 import {Redirect, Route, Switch} from 'react-router-dom'
-import {Page404} from "./Page404/Page404"
-import {TodoList} from "./TodoList/TodoList"
+import {Page404} from './Page404/Page404'
+import {TodoList} from './TodoList/TodoList'
 
 export const App = () => {
     return (

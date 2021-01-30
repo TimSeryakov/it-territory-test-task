@@ -95,7 +95,7 @@ const TaskTitle = (props: { status: TaskStatusType, title: string }) => {
                         : <span role="img" aria-label="done" className="opacity-50">👍🏿 </span>
                 }
             </div>
-            <h2 className={props.status === "active" ? styleActive : styleDone}>
+            <h2 className={props.status === "active" ? styleActive : `${styleDone} mr-5` }>
                 {props.title}
             </h2>
         </div>

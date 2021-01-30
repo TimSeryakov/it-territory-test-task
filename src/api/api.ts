@@ -1,6 +1,6 @@
 import {tasksCollection} from "./firebase"
 import {firebaseLooper} from "../helpers/firebaseLooper"
-import {TaskDataType, TaskStatusType} from "../redux/todolist-reducer";
+import {TaskDataType, TaskStatusType} from "../redux/todolist-reducer"
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Types

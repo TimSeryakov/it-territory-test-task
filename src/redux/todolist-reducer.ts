@@ -1,12 +1,15 @@
 import {v1} from 'uuid'
 import {arrayMove} from 'react-movable'
+import {ThunkDispatchType} from "./store";
+import {TASKS_API} from "../api/api";
+import { NOTIFICATION_MESSAGES, setNotificationMessageAC } from './notification-reducer';
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Init State
 // ---------------------------------------------------------------------------------------------------------------------
 
 export const initialState: TodoListStateType = {
-    todoListData: [
+    tasksData: [
         {id: v1(), order: 0, title: "Grab the gun", status: "active"},
         {id: v1(), order: 1, title: "Check the clip, are there any bullets", status: "active"},
         {id: v1(), order: 2, title: "Take a look into chamber", status: "active"},
@@ -14,7 +17,8 @@ export const initialState: TodoListStateType = {
         {id: v1(), order: 4, title: "Remove the safety catch", status: "active"},
         {id: v1(), order: 5, title: "Take aim", status: "active"},
         {id: v1(), order: 6, title: "Decide if you're going to shoot", status: "active"}
-    ]
+    ],
+    isFetching: false
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -22,12 +26,13 @@ export const initialState: TodoListStateType = {
 // ---------------------------------------------------------------------------------------------------------------------
 
 export type TodoListStateType = {
-    todoListData: TaskDataType[]
+    tasksData: TaskDataType[]
+    isFetching: boolean
 }
 
 export type TaskDataType = {
     id: string
-    order?: number
+    order: number
     title: string
     status: TaskStatusType
 }
@@ -39,6 +44,8 @@ export type TaskStatusType = "done" | "active"
 // ---------------------------------------------------------------------------------------------------------------------
 
 export type TodoListActionTypes =
+    | ReturnType<typeof setTasksDataAC>
+    | ReturnType<typeof setTaskIsFetching>
     | ReturnType<typeof addTaskAC>
     | ReturnType<typeof removeTaskAC>
     | ReturnType<typeof toggleTaskStatusAC>
@@ -51,6 +58,8 @@ export type TodoListActionTypes =
 // ---------------------------------------------------------------------------------------------------------------------
 
 enum TODO {
+    SET_TASKS_DATA = "TODO/SET_TASKS_DATA",
+    SET_TASKS_IS_FETCHING = "TODO/SET_TASKS_IS_FETCHING",
     ADD_TASK = "TODO/ADD_TASK",
     REMOVE_TASK = "TODO/REMOVE_TASK",
     TOGGLE_TASK_STATUS = "TODO/TOGGLE_TASK_STATUS",
@@ -64,23 +73,35 @@ enum TODO {
 
 const todolistReducer = (state: TodoListStateType = initialState, action: TodoListActionTypes): TodoListStateType => {
     switch (action.type) {
-        case TODO.ADD_TASK: {
-            const newTask: TaskDataType = {id: v1(), order: state.todoListData.length + 1, title: action.payload.title, status: "active"}
+        case TODO.SET_TASKS_DATA: {
             return {
                 ...state,
-                todoListData: [...state.todoListData, newTask]
+                tasksData: [...action.payload.tasksData.sort((prev, next) => prev.order - next.order)]
+            }
+        }
+        case TODO.SET_TASKS_IS_FETCHING: {
+            return {
+                ...state,
+                isFetching: action.payload.isFetching
+            }
+        }
+        case TODO.ADD_TASK: {
+            const newTask: TaskDataType = {id: v1(), order: state.tasksData.length + 1, title: action.payload.title, status: "active"}
+            return {
+                ...state,
+                tasksData: [...state.tasksData, newTask]
             }
         }
         case TODO.REMOVE_TASK: {
             return {
                 ...state,
-                todoListData: state.todoListData.filter(task => task.id !== action.payload.id)
+                tasksData: state.tasksData.filter(task => task.id !== action.payload.id)
             }
         }
         case TODO.TOGGLE_TASK_STATUS: {
             return {
                 ...state,
-                todoListData: state.todoListData
+                tasksData: state.tasksData
                     .map(task => task.id === action.payload.id
                         ?
                         {...task, status: task.status === "active" ? "done" : "active"}
@@ -92,7 +113,7 @@ const todolistReducer = (state: TodoListStateType = initialState, action: TodoLi
         case TODO.EDIT_TASK: {
             return {
                 ...state,
-                todoListData: state.todoListData
+                tasksData: state.tasksData
                     .map(task => task.id === action.payload.id
                         ?
                         {...task, title: action.payload.newValue}
@@ -103,7 +124,7 @@ const todolistReducer = (state: TodoListStateType = initialState, action: TodoLi
         }
         case TODO.CHANGE_TASKS_ORDER: {
             const orderedByIndex = arrayMove<TaskDataType>(
-                state.todoListData,
+                state.tasksData,
                 action.payload.oldIndex,
                 action.payload.newIndex
             )
@@ -112,7 +133,7 @@ const todolistReducer = (state: TodoListStateType = initialState, action: TodoLi
 
             return {
                 ...state,
-                todoListData: orderFieldEqualsArrayIndex
+                tasksData: orderFieldEqualsArrayIndex
             }
         }
         default:
@@ -123,6 +144,14 @@ const todolistReducer = (state: TodoListStateType = initialState, action: TodoLi
 // ---------------------------------------------------------------------------------------------------------------------
 // Action Creators
 // ---------------------------------------------------------------------------------------------------------------------
+
+export const setTasksDataAC = (tasksData: TaskDataType[]) =>
+    ({type: TODO.SET_TASKS_DATA, payload: {tasksData}}) as const
+
+export const setTaskIsFetching = (isFetching: boolean) =>
+    ({type: TODO.SET_TASKS_IS_FETCHING, payload: {isFetching}}) as const
+
+
 
 export const addTaskAC = (title: string) =>
     ({type: TODO.ADD_TASK, payload: {title}}) as const
@@ -139,6 +168,22 @@ export const editTaskAC = (id: string, newValue: string) =>
 export const changeTaskOrderAC = (oldIndex: number, newIndex: number) =>
     ({type: TODO.CHANGE_TASKS_ORDER, payload: {oldIndex, newIndex}}) as const
 
+// ---------------------------------------------------------------------------------------------------------------------
+// Thunk Creators
+// ---------------------------------------------------------------------------------------------------------------------
+
+
+export const requestTasksTC = (): ThunkDispatchType => async (dispatch) => {
+    dispatch(setTaskIsFetching(true))
+    try {
+        const res = await TASKS_API.get()
+        dispatch(setTasksDataAC(res))
+    } catch {
+        dispatch(setNotificationMessageAC(NOTIFICATION_MESSAGES.SYNC_ERROR, "error"))
+    } finally {
+        dispatch(setTaskIsFetching(false))
+    }
+}
+
+
 export default todolistReducer
-
-

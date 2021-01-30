@@ -3,7 +3,7 @@ export const firebaseLooper = (snapshot) => {
     snapshot.forEach(doc => {
         data.push({
             ...doc.data(),
-            ID: doc.id
+            id: doc.id
         })
     })
     return data

@@ -7,7 +7,7 @@ import {List} from 'react-movable'
 
 export const TodoList = () => {
     const selector = useCallback((state: RootStateType) => state.todolist, [])
-    const {todoListData} = useSelector(selector)
+    const {tasksData} = useSelector(selector)
     const dispatch = useDispatch()
 
     const editTask = (id: string, newValue: string) => {
@@ -27,7 +27,7 @@ export const TodoList = () => {
             <main>
                 <List
                     lockVertically
-                    values={todoListData}
+                    values={tasksData}
                     onChange={({oldIndex, newIndex}) =>
                         dispatch(changeTaskOrderAC(oldIndex, newIndex))
                     }
@@ -41,6 +41,7 @@ export const TodoList = () => {
                                          id={value.id}
                                          status={value.status}
                                          title={value.title}
+                                         order={value.order}
                                          removeTask={removeTask}
                                          toggleStatus={toggleStatus}
                                          editTask={editTask}

@@ -35,13 +35,7 @@ enum NOTIFICATION {
 
 //
 export enum NOTIFICATION_MESSAGES {
-    ADD_ADVERT_SUCCESS = "Advert successfully created",
-    ADD_ADVERT_ERROR = "Error while advert saving",
-    EDIT_ADVERT_SUCCESS = "Advert successfully edited",
-    LOGIN_SUCCESS = "You have successfully logged in",
-    LOGIN_ERROR = "Invalid username or password",
-    LOGOUT_SUCCESS = "Successfully signout",
-    AUTH_ERROR = "Login please"
+    SYNC_ERROR = "Error while sync data"
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

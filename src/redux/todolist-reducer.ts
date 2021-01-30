@@ -7,13 +7,13 @@ import {arrayMove} from 'react-movable'
 
 export const initialState: TodoListStateType = {
     todoListData: [
-        {id: v1(), title: "Grab the gun", status: "active"},
-        {id: v1(), title: "Check the clip, are there any bullets", status: "active"},
-        {id: v1(), title: "Take a look into chamber", status: "active"},
-        {id: v1(), title: "Cock the shutter", status: "active"},
-        {id: v1(), title: "Remove the safety catch", status: "active"},
-        {id: v1(), title: "Take aim", status: "active"},
-        {id: v1(), title: "Decide if you're going to shoot", status: "active"}
+        {id: v1(), order: 0, title: "Grab the gun", status: "active"},
+        {id: v1(), order: 1, title: "Check the clip, are there any bullets", status: "active"},
+        {id: v1(), order: 2, title: "Take a look into chamber", status: "active"},
+        {id: v1(), order: 3, title: "Cock the shutter", status: "active"},
+        {id: v1(), order: 4, title: "Remove the safety catch", status: "active"},
+        {id: v1(), order: 5, title: "Take aim", status: "active"},
+        {id: v1(), order: 6, title: "Decide if you're going to shoot", status: "active"}
     ]
 }
 
@@ -27,6 +27,7 @@ export type TodoListStateType = {
 
 export type TaskDataType = {
     id: string
+    order?: number
     title: string
     status: TaskStatusType
 }
@@ -64,10 +65,10 @@ enum TODO {
 const todolistReducer = (state: TodoListStateType = initialState, action: TodoListActionTypes): TodoListStateType => {
     switch (action.type) {
         case TODO.ADD_TASK: {
-            const newTask: TaskDataType = {id: v1(), title: action.payload.title, status: "active"}
+            const newTask: TaskDataType = {id: v1(), order: state.todoListData.length + 1, title: action.payload.title, status: "active"}
             return {
                 ...state,
-                todoListData: [newTask, ...state.todoListData]
+                todoListData: [...state.todoListData, newTask]
             }
         }
         case TODO.REMOVE_TASK: {
@@ -101,13 +102,17 @@ const todolistReducer = (state: TodoListStateType = initialState, action: TodoLi
             }
         }
         case TODO.CHANGE_TASKS_ORDER: {
+            const orderedByIndex = arrayMove<TaskDataType>(
+                state.todoListData,
+                action.payload.oldIndex,
+                action.payload.newIndex
+            )
+
+            const orderFieldEqualsArrayIndex = orderedByIndex.map((task, index) => ({...task, order: index}))
+
             return {
                 ...state,
-                todoListData: arrayMove<TaskDataType>(
-                    state.todoListData,
-                    action.payload.oldIndex,
-                    action.payload.newIndex
-                )
+                todoListData: orderFieldEqualsArrayIndex
             }
         }
         default:

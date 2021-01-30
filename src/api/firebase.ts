@@ -14,5 +14,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig)
 
 export const db = firebase.firestore()
+export const batch = db.batch()
 
 export const tasksCollectionRef = db.collection('tasks')

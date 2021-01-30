@@ -3,11 +3,32 @@ import {Redirect, Route, Switch} from 'react-router-dom'
 import {Page404} from './Page404/Page404'
 import {TodoList} from './TodoList/TodoList'
 import {tasksCollectionRef} from '../api/firebase'
-import {useDispatch} from 'react-redux';
-import { requestTasksTC } from '../redux/todolist-reducer'
+import {useDispatch, useSelector} from 'react-redux'
+import {requestTasksTC} from '../redux/todolist-reducer'
+import {toast} from 'react-toastify'
+import {RootStateType} from '../redux/store'
+import {makeToast} from '../helpers/makeToast'
+import 'react-toastify/dist/ReactToastify.min.css'
+import {
+    NOTIFICATION_MESSAGES,
+    setNotificationMessageAC,
+    setNotificationMessageEmptyAC
+} from '../redux/notification-reducer'
+
+// Toaster turned on
+toast.configure()
 
 export const App = () => {
+    const {notification} = useSelector((state: RootStateType) => state.notification)
     const dispatch = useDispatch()
+
+    // Put the toast in the toaster
+    useEffect(() => {
+        if (notification) {
+            makeToast(notification)
+            dispatch(setNotificationMessageEmptyAC())
+        }
+    }, [dispatch, notification])
 
     useEffect (() => {
         dispatch(requestTasksTC())
@@ -47,7 +68,8 @@ function Test() {
     }
 
     const get = () => {
-        dispatch(requestTasksTC())
+        // dispatch(requestTasksTC())
+        dispatch(setNotificationMessageAC(NOTIFICATION_MESSAGES.SYNC_ERROR, "error"))
     }
 
     return (

@@ -2,8 +2,9 @@ import React, {ChangeEvent, useCallback, useState} from 'react'
 import {TaskItem} from '../TaskItem/TaskItem'
 import {RootStateType} from '../../redux/store'
 import {useDispatch, useSelector} from 'react-redux'
-import {addTaskAC, changeTaskOrderAC, editTaskAC, removeTaskAC, toggleTaskStatusAC} from '../../redux/todolist-reducer'
+import {addTaskAC, editTaskAC, removeTaskAC, toggleTaskStatusAC, updateTasksOrderTC} from '../../redux/todolist-reducer'
 import {List} from 'react-movable'
+import {Preloader} from "../common/Preloader/Preloader";
 
 export const TodoList = () => {
     const selector = useCallback((state: RootStateType) => state.todolist, [])
@@ -29,7 +30,8 @@ export const TodoList = () => {
                     lockVertically
                     values={tasksData}
                     onChange={({oldIndex, newIndex}) =>
-                        dispatch(changeTaskOrderAC(oldIndex, newIndex))
+                        // dispatch(changeTaskOrderAC(oldIndex, newIndex))
+                        dispatch(updateTasksOrderTC(oldIndex, newIndex))
                     }
                     renderList={({children, props}) => {
                         return <ul {...props}>
@@ -58,13 +60,19 @@ export const TodoList = () => {
 //----------------------------------------------------------------------------------------------------------------------
 
 const Header = () => {
+    const selector = useCallback((state: RootStateType) => state.todolist, [])
+    const {isFetching} = useSelector(selector)
+
     return (
-        <header className="text-gb-text opacity-40 focus:outline-none pb-14">
+        <header className="text-gb-text opacity-40 focus:outline-none mb-14 relative">
             <a href="https://youtu.be/5coefdzLlYc" target="_blank" rel="noreferrer" className="focus:outline-none">
                 <h1 className="text-4xl mb-3">Watcha gonna do, whatcha gonna do</h1>
                 <h2 className="text-xl my-1">When they come for you</h2>
                 <h3 className="text-sm">Bad boys, bad boys...</h3>
             </a>
+            <div className="inline-block text-blue-50 absolute bottom-0 right-0 mb-1 mr-12">
+                {isFetching && <Preloader message="Syncing..."/>}
+            </div>
         </header>
     )
 }

@@ -1,8 +1,9 @@
 import {v1} from 'uuid'
 import {arrayMove} from 'react-movable'
-import {ThunkDispatchType} from "./store";
-import {TASKS_API} from "../api/api";
-import { NOTIFICATION_MESSAGES, setNotificationMessageAC } from './notification-reducer';
+import {ThunkDispatchType} from './store'
+import {TASKS_API} from '../api/api'
+import { NOTIFICATION_MESSAGES, setNotificationMessageAC } from './notification-reducer'
+import {batch, tasksCollectionRef} from '../api/firebase'
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Init State
@@ -178,12 +179,28 @@ export const requestTasksTC = (): ThunkDispatchType => async (dispatch) => {
     try {
         const res = await TASKS_API.get()
         dispatch(setTasksDataAC(res))
-    } catch {
+    } catch(err) { // FIXME
         dispatch(setNotificationMessageAC(NOTIFICATION_MESSAGES.SYNC_ERROR, "error"))
     } finally {
         dispatch(setTaskIsFetching(false))
     }
 }
 
+export const updateTasksOrderTC = (oldIndex: number, newIndex: number): ThunkDispatchType => async (dispatch, getState) => {
+    // First, we make local changes in state, then synchronize them on the server
+    dispatch(changeTaskOrderAC(oldIndex, newIndex))
+
+    const {tasksData} = getState().todolist
+    dispatch(setTaskIsFetching(true))
+    try {
+        for (let i = 0; i < tasksData.length; i++) {
+            await tasksCollectionRef.doc(tasksData[i].id).update({order: tasksData[i].order})
+        }
+    } catch(err) { // FIXME
+        dispatch(setNotificationMessageAC(NOTIFICATION_MESSAGES.SYNC_ERROR, "error"))
+    } finally {
+        dispatch(setTaskIsFetching(false))
+    }
+}
 
 export default todolistReducer

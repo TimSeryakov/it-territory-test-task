@@ -20,7 +20,7 @@ export const TASKS_API = {
                 return firebaseLooper(snapshot)
             })
     },
-    add(taskData: {title: string, status: TaskStatusType}) {
+    add(taskData: {title: string, order: number, status: TaskStatusType}) {
         return tasksCollection.add({...taskData})
     },
     delete(taskId: string) {

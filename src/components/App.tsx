@@ -20,7 +20,7 @@ export const App = () => {
 function Test() {
 
     const go = () => {
-        TASKS_API.add({title: "Check the clip, are there any bullets", status: "active"}).then(console.log)
+        TASKS_API.add({title: "Check the clip, are there any bullets", order: 0, status: "active"}).then(console.log)
     }
 
     return  (

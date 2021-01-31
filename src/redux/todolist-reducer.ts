@@ -38,7 +38,7 @@ export type TaskStatusType = "done" | "active"
 
 export type TodoListActionTypes =
     | ReturnType<typeof setTasksAC>
-    | ReturnType<typeof setTasksIsFetching>
+    | ReturnType<typeof setIsSyncing>
     | ReturnType<typeof addTaskAC>
     | ReturnType<typeof removeTaskAC>
     | ReturnType<typeof toggleTaskStatusAC>
@@ -145,7 +145,7 @@ const todolistReducer = (state: TodoListStateType = initialState, action: TodoLi
 export const setTasksAC = (tasks: TaskDataType[]) =>
     ({type: TODO.SET_TASKS_DATA, payload: {tasks}}) as const
 
-export const setTasksIsFetching = (isFetching: boolean) =>
+export const setIsSyncing = (isFetching: boolean) =>
     ({type: TODO.SET_TASKS_IS_FETCHING, payload: {isFetching}}) as const
 
 
@@ -169,14 +169,14 @@ export const changeTaskOrderAC = (oldIndex: number, newIndex: number) =>
 // ---------------------------------------------------------------------------------------------------------------------
 
 export const requestTasksTC = (): ThunkDispatchType => async (dispatch) => {
-    dispatch(setTasksIsFetching(true))
+    dispatch(setIsSyncing(true))
     try {
         const res = await TASKS_API.get()
         dispatch(setTasksAC(res))
     } catch (err) { // FIXME
         dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
     } finally {
-        dispatch(setTasksIsFetching(false))
+        dispatch(setIsSyncing(false))
     }
 }
 
@@ -185,13 +185,13 @@ export const updateTasksOrderTC = (oldIndex: number, newIndex: number): ThunkDis
     dispatch(changeTaskOrderAC(oldIndex, newIndex))
 
     const {tasks} = getState().todolist
-    dispatch(setTasksIsFetching(true))
+    dispatch(setIsSyncing(true))
     try {
         await TASKS_API.updateOrder(tasks)
     } catch (err) { // FIXME
         dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
     } finally {
-        dispatch(setTasksIsFetching(false))
+        dispatch(setIsSyncing(false))
     }
 }
 
@@ -202,9 +202,9 @@ export const toggleTaskStatusTC = (id: string): ThunkDispatchType => async (disp
 
     const task = tasks.find(task => task.id === id)
 
+    // Trying to sync
     if (task) {
-        console.log("GOOOOOOOOO")
-        dispatch(setTasksIsFetching(true))
+        dispatch(setIsSyncing(true))
         try {
             await TASKS_API.update(id, task)
         } catch (err) { // FIXME
@@ -212,7 +212,33 @@ export const toggleTaskStatusTC = (id: string): ThunkDispatchType => async (disp
             dispatch(toggleTaskStatusAC(id))
             dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
         } finally {
-            dispatch(setTasksIsFetching(false))
+            dispatch(setIsSyncing(false))
+        }
+    }
+}
+
+export const editTaskTitleTC = (id: string, title: string): ThunkDispatchType => async (dispatch, getState) => {
+    // Save original task title to be able to restore
+    const originalTasks = getState().todolist.tasks
+    const originalTask = originalTasks.find(task => task.id === id)
+    const originalTaskTitle = originalTask && originalTask.title
+
+    // Change local value
+    dispatch(editTaskTitleAC(id, title))
+    const modifiedTasks = getState().todolist.tasks
+    const modifiedTask = modifiedTasks.find(task => task.id === id)
+
+    // Trying to sync
+    if (modifiedTask) {
+        dispatch(setIsSyncing(true))
+        try {
+            await TASKS_API.update(id, modifiedTask)
+        } catch (err) { // FIXME
+            // Returning the previous state
+            dispatch(editTaskTitleAC(id, originalTaskTitle ? originalTaskTitle : title))
+            dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
+        } finally {
+            dispatch(setIsSyncing(false))
         }
     }
 }

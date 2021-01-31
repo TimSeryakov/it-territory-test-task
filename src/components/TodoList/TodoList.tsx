@@ -3,7 +3,7 @@ import {TaskItem} from '../TaskItem/TaskItem'
 import {RootStateType} from '../../redux/store'
 import {useDispatch, useSelector} from 'react-redux'
 import {
-    addTaskAC,
+    addTaskTC,
     editTaskTitleTC,
     removeTaskAC,
     toggleTaskStatusTC,
@@ -93,7 +93,7 @@ const AddTaskInput = () => {
 
     const addTask = () => {
         if (typedText) {
-            dispatch(addTaskAC(typedText))
+            dispatch(addTaskTC(typedText))
             setTypedText(null)
         }
     }
@@ -104,7 +104,7 @@ const AddTaskInput = () => {
 
     const inputOnKeyPressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter" && typedText) {
-            dispatch(addTaskAC(typedText))
+            dispatch(addTaskTC(typedText))
             setTypedText(null)
         }
     }

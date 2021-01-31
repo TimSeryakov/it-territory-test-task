@@ -7,7 +7,7 @@ import {db, tasksCollectionRef} from './firebase'
 // ---------------------------------------------------------------------------------------------------------------------
 
 export const TASKS_API = {
-    get() { // Done
+    get() {
         return tasksCollectionRef
             .orderBy("order", "asc")
             .get()
@@ -15,14 +15,18 @@ export const TASKS_API = {
                 return firebaseLooper(snapshot)
             })
     },
-    add(taskData: {title: string, order: number, status: TaskStatusType}) {
-        return tasksCollectionRef.add({...taskData})
+    add(title: string, order: number) {
+        const newTaskRef = tasksCollectionRef.doc()
+        const id = newTaskRef.id
+        newTaskRef.set({title, order, status: "active"}).then()
+
+        return ({id, title, order, status: "active" as TaskStatusType})
     },
     delete(id: string) {
         return tasksCollectionRef.doc(id).delete()
     },
     update(id: string, taskData: TaskDataType) {
-        return tasksCollectionRef.doc(id).update({...taskData})
+        return tasksCollectionRef.doc(id).update(taskData)
     },
     updateOrder(tasks: TaskDataType[]) {
         const batch = db.batch()

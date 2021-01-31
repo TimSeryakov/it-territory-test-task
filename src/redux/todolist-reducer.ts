@@ -79,15 +79,9 @@ const todolistReducer = (state: TodoListStateType = initialState, action: TodoLi
             }
         }
         case TODO.ADD_TASK: {
-            const newTask: TaskDataType = {
-                id: v1(),
-                order: state.tasks.length + 1,
-                title: action.payload.title,
-                status: "active"
-            }
             return {
                 ...state,
-                tasks: [...state.tasks, newTask]
+                tasks: [...state.tasks, action.payload.task]
             }
         }
         case TODO.REMOVE_TASK: {
@@ -148,9 +142,10 @@ export const setTasksAC = (tasks: TaskDataType[]) =>
 export const setIsSyncing = (isFetching: boolean) =>
     ({type: TODO.SET_TASKS_IS_FETCHING, payload: {isFetching}}) as const
 
+export const addTaskAC = (task: {id: string, title: string, order: number, status: TaskStatusType}) =>
+    ({type: TODO.ADD_TASK, payload: {task}}) as const
 
-export const addTaskAC = (title: string) =>
-    ({type: TODO.ADD_TASK, payload: {title}}) as const
+
 
 export const removeTaskAC = (id: string) =>
     ({type: TODO.REMOVE_TASK, payload: {id}}) as const
@@ -243,5 +238,18 @@ export const editTaskTitleTC = (id: string, title: string): ThunkDispatchType =>
     }
 }
 
+export const addTaskTC = (title: string): ThunkDispatchType => async (dispatch, getState) => {
+    const order = getState().todolist.tasks.length + 1
+
+    dispatch(setIsSyncing(true))
+    try {
+        const task: TaskDataType = await TASKS_API.add(title, order)
+        dispatch(addTaskAC(task))
+    } catch (err) { // FIXME
+        dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
+    } finally {
+        dispatch(setIsSyncing(false))
+    }
+}
 
 export default todolistReducer

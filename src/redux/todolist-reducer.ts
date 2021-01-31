@@ -1,4 +1,3 @@
-import {v1} from 'uuid'
 import {arrayMove} from 'react-movable'
 import {ThunkDispatchType} from './store'
 import {TASKS_API} from '../api/api'
@@ -245,6 +244,18 @@ export const addTaskTC = (title: string): ThunkDispatchType => async (dispatch, 
     try {
         const task: TaskDataType = await TASKS_API.add(title, order)
         dispatch(addTaskAC(task))
+    } catch (err) { // FIXME
+        dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
+    } finally {
+        dispatch(setIsSyncing(false))
+    }
+}
+
+export const removeTaskTC = (id: string): ThunkDispatchType => async (dispatch, getState) => {
+    dispatch(setIsSyncing(true))
+    try {
+        await TASKS_API.delete(id)
+        dispatch(removeTaskAC(id))
     } catch (err) { // FIXME
         dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
     } finally {

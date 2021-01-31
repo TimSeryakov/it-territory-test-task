@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {
     addTaskTC,
     editTaskTitleTC,
-    removeTaskAC,
+    removeTaskTC,
     toggleTaskStatusTC,
     updateTasksOrderTC
 } from '../../redux/todolist-reducer'
@@ -24,7 +24,7 @@ export const TodoList = () => {
         dispatch(toggleTaskStatusTC(id))
     }
     const removeTask = (id: string) => {
-        dispatch(removeTaskAC(id))
+        dispatch(removeTaskTC(id))
     }
 
     return (

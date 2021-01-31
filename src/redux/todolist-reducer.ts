@@ -21,7 +21,6 @@ export type TodoListStateType = {
     isFetching: boolean
 }
 
-
 export type TaskDataType = {
     id: string
     order: number
@@ -144,8 +143,6 @@ export const setIsSyncing = (isFetching: boolean) =>
 export const addTaskAC = (task: {id: string, title: string, order: number, status: TaskStatusType}) =>
     ({type: TODO.ADD_TASK, payload: {task}}) as const
 
-
-
 export const removeTaskAC = (id: string) =>
     ({type: TODO.REMOVE_TASK, payload: {id}}) as const
 
@@ -188,7 +185,6 @@ export const updateTasksOrderTC = (oldIndex: number, newIndex: number): ThunkDis
         dispatch(setIsSyncing(false))
     }
 }
-
 
 export const toggleTaskStatusTC = (id: string): ThunkDispatchType => async (dispatch, getState) => {
     dispatch(toggleTaskStatusAC(id))
@@ -251,7 +247,7 @@ export const addTaskTC = (title: string): ThunkDispatchType => async (dispatch, 
     }
 }
 
-export const removeTaskTC = (id: string): ThunkDispatchType => async (dispatch, getState) => {
+export const removeTaskTC = (id: string): ThunkDispatchType => async (dispatch) => {
     dispatch(setIsSyncing(true))
     try {
         await TASKS_API.delete(id)

@@ -34,7 +34,7 @@ enum NOTIFICATION {
 }
 
 //
-export enum NOTIFICATION_MESSAGES {
+export enum NOTIFICATIONS {
     SYNC_ERROR = "Error while sync data"
 }
 

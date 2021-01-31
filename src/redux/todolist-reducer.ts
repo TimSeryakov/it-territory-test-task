@@ -2,8 +2,7 @@ import {v1} from 'uuid'
 import {arrayMove} from 'react-movable'
 import {ThunkDispatchType} from './store'
 import {TASKS_API} from '../api/api'
-import {NOTIFICATION_MESSAGES, setNotificationMessageAC} from './notification-reducer'
-import {tasksCollectionRef} from '../api/firebase'
+import {NOTIFICATIONS, setNotificationMessageAC} from './notification-reducer'
 
 // ---------------------------------------------------------------------------------------------------------------------
 // Init State
@@ -39,7 +38,7 @@ export type TaskStatusType = "done" | "active"
 
 export type TodoListActionTypes =
     | ReturnType<typeof setTasksDataAC>
-    | ReturnType<typeof setTaskIsFetching>
+    | ReturnType<typeof setTasksIsFetching>
     | ReturnType<typeof addTaskAC>
     | ReturnType<typeof removeTaskAC>
     | ReturnType<typeof toggleTaskStatusAC>
@@ -142,7 +141,7 @@ const todolistReducer = (state: TodoListStateType = initialState, action: TodoLi
 export const setTasksDataAC = (tasksData: TaskDataType[]) =>
     ({type: TODO.SET_TASKS_DATA, payload: {tasksData}}) as const
 
-export const setTaskIsFetching = (isFetching: boolean) =>
+export const setTasksIsFetching = (isFetching: boolean) =>
     ({type: TODO.SET_TASKS_IS_FETCHING, payload: {isFetching}}) as const
 
 
@@ -168,31 +167,29 @@ export const changeTaskOrderAC = (oldIndex: number, newIndex: number) =>
 
 
 export const requestTasksTC = (): ThunkDispatchType => async (dispatch) => {
-    dispatch(setTaskIsFetching(true))
+    dispatch(setTasksIsFetching(true))
     try {
         const res = await TASKS_API.get()
         dispatch(setTasksDataAC(res))
     } catch(err) { // FIXME
-        dispatch(setNotificationMessageAC(NOTIFICATION_MESSAGES.SYNC_ERROR, "error"))
+        dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
     } finally {
-        dispatch(setTaskIsFetching(false))
+        dispatch(setTasksIsFetching(false))
     }
 }
 
 export const updateTasksOrderTC = (oldIndex: number, newIndex: number): ThunkDispatchType => async (dispatch, getState) => {
-    // First, we make local changes in state, then synchronize them on the server
+    // First, make local changes in state, then synchronize them on the server
     dispatch(changeTaskOrderAC(oldIndex, newIndex))
 
     const {tasksData} = getState().todolist
-    dispatch(setTaskIsFetching(true))
+    dispatch(setTasksIsFetching(true))
     try {
-        for (let i = 0; i < tasksData.length; i++) {
-            await tasksCollectionRef.doc(tasksData[i].id).update({order: tasksData[i].order})
-        }
+        await TASKS_API.updateOrder(tasksData)
     } catch(err) { // FIXME
-        dispatch(setNotificationMessageAC(NOTIFICATION_MESSAGES.SYNC_ERROR, "error"))
+        dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
     } finally {
-        dispatch(setTaskIsFetching(false))
+        dispatch(setTasksIsFetching(false))
     }
 }
 

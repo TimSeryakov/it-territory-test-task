@@ -10,7 +10,7 @@ import {RootStateType} from '../redux/store'
 import {makeToast} from '../helpers/makeToast'
 import 'react-toastify/dist/ReactToastify.min.css'
 import {
-    NOTIFICATION_MESSAGES,
+    NOTIFICATIONS,
     setNotificationMessageAC,
     setNotificationMessageEmptyAC
 } from '../redux/notification-reducer'
@@ -69,7 +69,7 @@ function Test() {
 
     const get = () => {
         // dispatch(requestTasksTC())
-        dispatch(setNotificationMessageAC(NOTIFICATION_MESSAGES.SYNC_ERROR, "error"))
+        dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
     }
 
     return (

@@ -18,16 +18,16 @@ export const TASKS_API = {
     add(taskData: {title: string, order: number, status: TaskStatusType}) {
         return tasksCollectionRef.add({...taskData})
     },
-    delete(taskId: string) {
-        return tasksCollectionRef.doc(taskId).delete()
+    delete(id: string) {
+        return tasksCollectionRef.doc(id).delete()
     },
-    update(taskId: string, taskData: TaskDataType) {
-        return tasksCollectionRef.doc(taskId).update({...taskData})
+    update(id: string, taskData: TaskDataType) {
+        return tasksCollectionRef.doc(id).update({...taskData})
     },
-    updateOrder(tasksData: TaskDataType[]) {
+    updateOrder(tasks: TaskDataType[]) {
         const batch = db.batch()
-        for (let i = 0; i < tasksData.length; i++) {
-            batch.update(tasksCollectionRef.doc(tasksData[i].id), {order: tasksData[i].order})
+        for (let i = 0; i < tasks.length; i++) {
+            batch.update(tasksCollectionRef.doc(tasks[i].id), {order: tasks[i].order})
         }
         return batch.commit()
     }

@@ -8,7 +8,7 @@ import {Preloader} from '../common/Preloader/Preloader'
 
 export const TodoList = () => {
     const taskSelector = useCallback((state: RootStateType) => state.todolist, [])
-    const {tasksData, isFetching} = useSelector(taskSelector)
+    const {tasks, isFetching} = useSelector(taskSelector)
     const dispatch = useDispatch()
 
     const editTask = (id: string, newValue: string) => {
@@ -23,9 +23,9 @@ export const TodoList = () => {
 
     return (
         <section className="my-12">
-            <Header isFetching={isFetching && tasksData.length !== 0}/>
+            <Header isFetching={isFetching && tasks.length !== 0}/>
             <AddTaskInput/>
-            {tasksData.length === 0
+            {tasks.length === 0
                 ?
                 <div className="flex justify-center items-center h-96 py-24">
                     <Preloader message="Requesting data..."/>
@@ -34,7 +34,7 @@ export const TodoList = () => {
                 <main>
                     <List
                         lockVertically
-                        values={tasksData}
+                        values={tasks}
                         onChange={({oldIndex, newIndex}) =>
                             // dispatch(changeTaskOrderAC(oldIndex, newIndex))
                             dispatch(updateTasksOrderTC(oldIndex, newIndex))

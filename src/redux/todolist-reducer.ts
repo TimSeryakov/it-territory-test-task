@@ -9,7 +9,7 @@ import {NOTIFICATIONS, setNotificationMessageAC} from './notification-reducer'
 // ---------------------------------------------------------------------------------------------------------------------
 
 export const initialState: TodoListStateType = {
-    tasksData: [],
+    tasks: [],
     isFetching: false
 }
 
@@ -18,7 +18,7 @@ export const initialState: TodoListStateType = {
 // ---------------------------------------------------------------------------------------------------------------------
 
 export type TodoListStateType = {
-    tasksData: TaskDataType[]
+    tasks: TaskDataType[]
     isFetching: boolean
 }
 
@@ -37,7 +37,7 @@ export type TaskStatusType = "done" | "active"
 // ---------------------------------------------------------------------------------------------------------------------
 
 export type TodoListActionTypes =
-    | ReturnType<typeof setTasksDataAC>
+    | ReturnType<typeof setTasksAC>
     | ReturnType<typeof setTasksIsFetching>
     | ReturnType<typeof addTaskAC>
     | ReturnType<typeof removeTaskAC>
@@ -69,7 +69,7 @@ const todolistReducer = (state: TodoListStateType = initialState, action: TodoLi
         case TODO.SET_TASKS_DATA: {
             return {
                 ...state,
-                tasksData: [...action.payload.tasksData.sort((prev, next) => prev.order - next.order)]
+                tasks: [...action.payload.tasks.sort((prev, next) => prev.order - next.order)]
             }
         }
         case TODO.SET_TASKS_IS_FETCHING: {
@@ -79,22 +79,22 @@ const todolistReducer = (state: TodoListStateType = initialState, action: TodoLi
             }
         }
         case TODO.ADD_TASK: {
-            const newTask: TaskDataType = {id: v1(), order: state.tasksData.length + 1, title: action.payload.title, status: "active"}
+            const newTask: TaskDataType = {id: v1(), order: state.tasks.length + 1, title: action.payload.title, status: "active"}
             return {
                 ...state,
-                tasksData: [...state.tasksData, newTask]
+                tasks: [...state.tasks, newTask]
             }
         }
         case TODO.REMOVE_TASK: {
             return {
                 ...state,
-                tasksData: state.tasksData.filter(task => task.id !== action.payload.id)
+                tasks: state.tasks.filter(task => task.id !== action.payload.id)
             }
         }
         case TODO.TOGGLE_TASK_STATUS: {
             return {
                 ...state,
-                tasksData: state.tasksData
+                tasks: state.tasks
                     .map(task => task.id === action.payload.id
                         ?
                         {...task, status: task.status === "active" ? "done" : "active"}
@@ -106,7 +106,7 @@ const todolistReducer = (state: TodoListStateType = initialState, action: TodoLi
         case TODO.EDIT_TASK: {
             return {
                 ...state,
-                tasksData: state.tasksData
+                tasks: state.tasks
                     .map(task => task.id === action.payload.id
                         ?
                         {...task, title: action.payload.newValue}
@@ -117,16 +117,15 @@ const todolistReducer = (state: TodoListStateType = initialState, action: TodoLi
         }
         case TODO.CHANGE_TASKS_ORDER: {
             const orderedByIndex = arrayMove<TaskDataType>(
-                state.tasksData,
+                state.tasks,
                 action.payload.oldIndex,
                 action.payload.newIndex
             )
-
             const orderFieldEqualsArrayIndex = orderedByIndex.map((task, index) => ({...task, order: index}))
 
             return {
                 ...state,
-                tasksData: orderFieldEqualsArrayIndex
+                tasks: orderFieldEqualsArrayIndex
             }
         }
         default:
@@ -138,8 +137,8 @@ const todolistReducer = (state: TodoListStateType = initialState, action: TodoLi
 // Action Creators
 // ---------------------------------------------------------------------------------------------------------------------
 
-export const setTasksDataAC = (tasksData: TaskDataType[]) =>
-    ({type: TODO.SET_TASKS_DATA, payload: {tasksData}}) as const
+export const setTasksAC = (tasks: TaskDataType[]) =>
+    ({type: TODO.SET_TASKS_DATA, payload: {tasks}}) as const
 
 export const setTasksIsFetching = (isFetching: boolean) =>
     ({type: TODO.SET_TASKS_IS_FETCHING, payload: {isFetching}}) as const
@@ -165,12 +164,11 @@ export const changeTaskOrderAC = (oldIndex: number, newIndex: number) =>
 // Thunk Creators
 // ---------------------------------------------------------------------------------------------------------------------
 
-
 export const requestTasksTC = (): ThunkDispatchType => async (dispatch) => {
     dispatch(setTasksIsFetching(true))
     try {
         const res = await TASKS_API.get()
-        dispatch(setTasksDataAC(res))
+        dispatch(setTasksAC(res))
     } catch(err) { // FIXME
         dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
     } finally {
@@ -182,10 +180,10 @@ export const updateTasksOrderTC = (oldIndex: number, newIndex: number): ThunkDis
     // First, make local changes in state, then synchronize them on the server
     dispatch(changeTaskOrderAC(oldIndex, newIndex))
 
-    const {tasksData} = getState().todolist
+    const {tasks} = getState().todolist
     dispatch(setTasksIsFetching(true))
     try {
-        await TASKS_API.updateOrder(tasksData)
+        await TASKS_API.updateOrder(tasks)
     } catch(err) { // FIXME
         dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
     } finally {

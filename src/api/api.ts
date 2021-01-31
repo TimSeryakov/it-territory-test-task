@@ -7,7 +7,7 @@ import {db, tasksCollectionRef} from './firebase'
 // ---------------------------------------------------------------------------------------------------------------------
 
 export const TASKS_API = {
-    get() {
+    get() { // Done
         return tasksCollectionRef
             .orderBy("order", "asc")
             .get()
@@ -26,9 +26,9 @@ export const TASKS_API = {
     },
     updateOrder(tasks: TaskDataType[]) {
         const batch = db.batch()
-        for (let i = 0; i < tasks.length; i++) {
-            batch.update(tasksCollectionRef.doc(tasks[i].id), {order: tasks[i].order})
-        }
+        tasks.forEach(task => {
+            batch.update(tasksCollectionRef.doc(task.id), {order: task.order})
+        })
         return batch.commit()
     }
 }

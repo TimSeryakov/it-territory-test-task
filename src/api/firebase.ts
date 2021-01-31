@@ -15,4 +15,5 @@ firebase.initializeApp(firebaseConfig)
 
 export const db = firebase.firestore()
 
+
 export const tasksCollectionRef = db.collection('tasks')

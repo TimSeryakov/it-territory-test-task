@@ -42,7 +42,7 @@ export type TodoListActionTypes =
     | ReturnType<typeof addTaskAC>
     | ReturnType<typeof removeTaskAC>
     | ReturnType<typeof toggleTaskStatusAC>
-    | ReturnType<typeof editTaskAC>
+    | ReturnType<typeof editTaskTitleAC>
     | ReturnType<typeof changeTaskOrderAC>
 
 
@@ -79,7 +79,12 @@ const todolistReducer = (state: TodoListStateType = initialState, action: TodoLi
             }
         }
         case TODO.ADD_TASK: {
-            const newTask: TaskDataType = {id: v1(), order: state.tasks.length + 1, title: action.payload.title, status: "active"}
+            const newTask: TaskDataType = {
+                id: v1(),
+                order: state.tasks.length + 1,
+                title: action.payload.title,
+                status: "active"
+            }
             return {
                 ...state,
                 tasks: [...state.tasks, newTask]
@@ -109,7 +114,7 @@ const todolistReducer = (state: TodoListStateType = initialState, action: TodoLi
                 tasks: state.tasks
                     .map(task => task.id === action.payload.id
                         ?
-                        {...task, title: action.payload.newValue}
+                        {...task, title: action.payload.title}
                         :
                         task
                     )
@@ -144,7 +149,6 @@ export const setTasksIsFetching = (isFetching: boolean) =>
     ({type: TODO.SET_TASKS_IS_FETCHING, payload: {isFetching}}) as const
 
 
-
 export const addTaskAC = (title: string) =>
     ({type: TODO.ADD_TASK, payload: {title}}) as const
 
@@ -154,8 +158,8 @@ export const removeTaskAC = (id: string) =>
 export const toggleTaskStatusAC = (id: string) =>
     ({type: TODO.TOGGLE_TASK_STATUS, payload: {id}}) as const
 
-export const editTaskAC = (id: string, newValue: string) =>
-    ({type: TODO.EDIT_TASK, payload: {id, newValue}}) as const
+export const editTaskTitleAC = (id: string, title: string) =>
+    ({type: TODO.EDIT_TASK, payload: {id, title}}) as const
 
 export const changeTaskOrderAC = (oldIndex: number, newIndex: number) =>
     ({type: TODO.CHANGE_TASKS_ORDER, payload: {oldIndex, newIndex}}) as const
@@ -169,7 +173,7 @@ export const requestTasksTC = (): ThunkDispatchType => async (dispatch) => {
     try {
         const res = await TASKS_API.get()
         dispatch(setTasksAC(res))
-    } catch(err) { // FIXME
+    } catch (err) { // FIXME
         dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
     } finally {
         dispatch(setTasksIsFetching(false))
@@ -184,11 +188,34 @@ export const updateTasksOrderTC = (oldIndex: number, newIndex: number): ThunkDis
     dispatch(setTasksIsFetching(true))
     try {
         await TASKS_API.updateOrder(tasks)
-    } catch(err) { // FIXME
+    } catch (err) { // FIXME
         dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
     } finally {
         dispatch(setTasksIsFetching(false))
     }
 }
+
+
+export const toggleTaskStatusTC = (id: string): ThunkDispatchType => async (dispatch, getState) => {
+    dispatch(toggleTaskStatusAC(id))
+    const {tasks} = getState().todolist
+
+    const task = tasks.find(task => task.id === id)
+
+    if (task) {
+        console.log("GOOOOOOOOO")
+        dispatch(setTasksIsFetching(true))
+        try {
+            await TASKS_API.update(id, task)
+        } catch (err) { // FIXME
+            // Returning the previous state
+            dispatch(toggleTaskStatusAC(id))
+            dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
+        } finally {
+            dispatch(setTasksIsFetching(false))
+        }
+    }
+}
+
 
 export default todolistReducer

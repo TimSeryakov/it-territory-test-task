@@ -2,7 +2,7 @@ import React, {ChangeEvent, useCallback, useState} from 'react'
 import {TaskItem} from '../TaskItem/TaskItem'
 import {RootStateType} from '../../redux/store'
 import {useDispatch, useSelector} from 'react-redux'
-import {addTaskAC, editTaskAC, removeTaskAC, toggleTaskStatusAC, updateTasksOrderTC} from '../../redux/todolist-reducer'
+import {addTaskAC, editTaskTitleAC, removeTaskAC, toggleTaskStatusTC, updateTasksOrderTC} from '../../redux/todolist-reducer'
 import {List} from 'react-movable'
 import {Preloader} from '../common/Preloader/Preloader'
 
@@ -12,10 +12,11 @@ export const TodoList = () => {
     const dispatch = useDispatch()
 
     const editTask = (id: string, newValue: string) => {
-        dispatch(editTaskAC(id, newValue))
+        dispatch(editTaskTitleAC(id, newValue))
     }
     const toggleStatus = (id: string) => {
-        dispatch(toggleTaskStatusAC(id))
+        // dispatch(toggleTaskStatusAC(id))
+        dispatch(toggleTaskStatusTC(id))
     }
     const removeTask = (id: string) => {
         dispatch(removeTaskAC(id))
@@ -36,7 +37,6 @@ export const TodoList = () => {
                         lockVertically
                         values={tasks}
                         onChange={({oldIndex, newIndex}) =>
-                            // dispatch(changeTaskOrderAC(oldIndex, newIndex))
                             dispatch(updateTasksOrderTC(oldIndex, newIndex))
                         }
                         renderList={({children, props}) => {

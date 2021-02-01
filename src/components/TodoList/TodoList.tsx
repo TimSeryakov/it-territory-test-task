@@ -14,7 +14,7 @@ import {Preloader} from '../common/Preloader/Preloader'
 
 export const TodoList = () => {
     const taskSelector = useCallback((state: RootStateType) => state.todolist, [])
-    const {tasks, isFetching} = useSelector(taskSelector)
+    const {tasks, isSyncing} = useSelector(taskSelector)
     const dispatch = useDispatch()
 
     const editTask = (id: string, newValue: string) => {
@@ -29,7 +29,7 @@ export const TodoList = () => {
 
     return (
         <section className="my-12">
-            <Header isFetching={isFetching && tasks.length !== 0}/>
+            <Header isFetching={isSyncing && tasks.length !== 0}/>
             <AddTaskInput/>
             {tasks.length === 0
                 ?
@@ -72,7 +72,6 @@ export const TodoList = () => {
 //----------------------------------------------------------------------------------------------------------------------
 
 const Header = (props: { isFetching: boolean }) => {
-
     return (
         <header className="text-gb-text opacity-40 focus:outline-none mb-14 relative">
             <a href="https://youtu.be/5coefdzLlYc" target="_blank" rel="noreferrer" className="focus:outline-none">

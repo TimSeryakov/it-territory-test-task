@@ -2,20 +2,17 @@ import {arrayMove} from 'react-movable'
 import {ThunkDispatchType} from './store'
 import {TASKS_API} from '../api/api'
 import {NOTIFICATIONS, setNotificationMessageAC} from './notification-reducer'
+import {createSlice, PayloadAction} from '@reduxjs/toolkit'
 
-// ---------------------------------------------------------------------------------------------------------------------
-// Init State
-// ---------------------------------------------------------------------------------------------------------------------
 
+// init state
 export const initialState: TodoListStateType = {
     tasks: [],
     isSyncing: false
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------------------------------------------------
 
+// types
 export type TodoListStateType = {
     tasks: TaskDataType[]
     isSyncing: boolean
@@ -30,10 +27,8 @@ export type TaskDataType = {
 
 export type TaskStatusType = "done" | "active"
 
-// ---------------------------------------------------------------------------------------------------------------------
-// Action Creators Types
-// ---------------------------------------------------------------------------------------------------------------------
 
+// action creators types
 export type TodoListActionTypes =
     | ReturnType<typeof setTasksAC>
     | ReturnType<typeof setIsSyncing>
@@ -44,165 +39,100 @@ export type TodoListActionTypes =
     | ReturnType<typeof changeTaskOrderAC>
 
 
-// ---------------------------------------------------------------------------------------------------------------------
-// Enum (const)
-// ---------------------------------------------------------------------------------------------------------------------
-
-enum TODO {
-    SET_TASKS_DATA = "TODO/SET_TASKS_DATA",
-    SET_TASKS_IS_SYNCING = "TODO/SET_TASKS_IS_SYNCING",
-    ADD_TASK = "TODO/ADD_TASK",
-    REMOVE_TASK = "TODO/REMOVE_TASK",
-    TOGGLE_TASK_STATUS = "TODO/TOGGLE_TASK_STATUS",
-    EDIT_TASK = "TODO/EDIT_TASK",
-    CHANGE_TASKS_ORDER = "TODO/CHANGE_TASKS_ORDER"
-}
-
-// ---------------------------------------------------------------------------------------------------------------------
-// Reducer
-// ---------------------------------------------------------------------------------------------------------------------
-
-const todolistReducer = (state: TodoListStateType = initialState, action: TodoListActionTypes): TodoListStateType => {
-    switch (action.type) {
-        case TODO.SET_TASKS_DATA: {
-            return {
-                ...state,
-                tasks: [...action.payload.tasks.sort((prev, next) => prev.order - next.order)]
-            }
-        }
-        case TODO.SET_TASKS_IS_SYNCING: {
-            return {
-                ...state,
-                isSyncing: action.payload.isSyncing
-            }
-        }
-        case TODO.ADD_TASK: {
-            return {
-                ...state,
-                tasks: [...state.tasks, action.payload.task]
-            }
-        }
-        case TODO.REMOVE_TASK: {
-            return {
-                ...state,
-                tasks: state.tasks.filter(task => task.id !== action.payload.id)
-            }
-        }
-        case TODO.TOGGLE_TASK_STATUS: {
-            return {
-                ...state,
-                tasks: state.tasks
-                    .map(task => task.id === action.payload.id
-                        ?
-                        {...task, status: task.status === "active" ? "done" : "active"}
-                        :
-                        task
-                    )
-            }
-        }
-        case TODO.EDIT_TASK: {
-            return {
-                ...state,
-                tasks: state.tasks
-                    .map(task => task.id === action.payload.id
-                        ?
-                        {...task, title: action.payload.title}
-                        :
-                        task
-                    )
-            }
-        }
-        case TODO.CHANGE_TASKS_ORDER: {
+// reducer
+const slice = createSlice({
+    name: "todolist",
+    initialState: initialState,
+    reducers: {
+        setTasksAC(state, action: PayloadAction<{ tasks: TaskDataType[] }>) {
+            state.tasks = action.payload.tasks.sort((prev, next) => prev.order - next.order)
+        },
+        setIsSyncing(state, action: PayloadAction<{ isSyncing: boolean }>) {
+            state.isSyncing = action.payload.isSyncing
+        },
+        addTaskAC(state, action: PayloadAction<{ task: { id: string, title: string, order: number, status: TaskStatusType } }>) {
+            state.tasks = [...state.tasks, action.payload.task]
+        },
+        removeTaskAC(state, action: PayloadAction<{ id: string }>) {
+            state.tasks = state.tasks.filter(task => task.id !== action.payload.id)
+        },
+        toggleTaskStatusAC(state, action: PayloadAction<{ id: string }>) {
+            state.tasks = state.tasks.map(task => task.id === action.payload.id
+                ? {...task, status: task.status === "active" ? "done" : "active"}
+                : task
+            )
+        },
+        editTaskTitleAC(state, action: PayloadAction<{ id: string, title: string }>) {
+            state.tasks = state.tasks.map(task => task.id === action.payload.id
+                ? {...task, title: action.payload.title}
+                : task
+            )
+        },
+        changeTaskOrderAC(state, action: PayloadAction<{ oldIndex: number, newIndex: number }>) {
             const orderedByIndex = arrayMove<TaskDataType>(
                 state.tasks,
                 action.payload.oldIndex,
                 action.payload.newIndex
             )
-            const orderFieldEqualsArrayIndex = orderedByIndex.map((task, index) => ({...task, order: index}))
-
-            return {
-                ...state,
-                tasks: orderFieldEqualsArrayIndex
-            }
+            // .order fields must equal array index
+            state.tasks = orderedByIndex.map((task, index) => ({...task, order: index}))
         }
-        default:
-            return state
     }
-}
+})
 
-// ---------------------------------------------------------------------------------------------------------------------
-// Action Creators
-// ---------------------------------------------------------------------------------------------------------------------
 
-export const setTasksAC = (tasks: TaskDataType[]) =>
-    ({type: TODO.SET_TASKS_DATA, payload: {tasks}}) as const
+// actions creators export
+export const {
+    addTaskAC, changeTaskOrderAC, editTaskTitleAC, removeTaskAC,
+    setIsSyncing, setTasksAC, toggleTaskStatusAC
+} = slice.actions
 
-export const setIsSyncing = (isSyncing: boolean) =>
-    ({type: TODO.SET_TASKS_IS_SYNCING, payload: {isSyncing}}) as const
 
-export const addTaskAC = (task: {id: string, title: string, order: number, status: TaskStatusType}) =>
-    ({type: TODO.ADD_TASK, payload: {task}}) as const
-
-export const removeTaskAC = (id: string) =>
-    ({type: TODO.REMOVE_TASK, payload: {id}}) as const
-
-export const toggleTaskStatusAC = (id: string) =>
-    ({type: TODO.TOGGLE_TASK_STATUS, payload: {id}}) as const
-
-export const editTaskTitleAC = (id: string, title: string) =>
-    ({type: TODO.EDIT_TASK, payload: {id, title}}) as const
-
-export const changeTaskOrderAC = (oldIndex: number, newIndex: number) =>
-    ({type: TODO.CHANGE_TASKS_ORDER, payload: {oldIndex, newIndex}}) as const
-
-// ---------------------------------------------------------------------------------------------------------------------
-// Thunk Creators
-// ---------------------------------------------------------------------------------------------------------------------
-
+// thunk creators
 export const requestTasksTC = (): ThunkDispatchType => async (dispatch) => {
-    dispatch(setIsSyncing(true))
+    dispatch(setIsSyncing({isSyncing: true}))
     try {
         const res = await TASKS_API.get()
-        dispatch(setTasksAC(res))
+        dispatch(setTasksAC({tasks: res}))
     } catch {
         dispatch(setNotificationMessageAC({message: NOTIFICATIONS.SYNC_ERROR, type: "error"}))
     } finally {
-        dispatch(setIsSyncing(false))
+        dispatch(setIsSyncing({isSyncing: false}))
     }
 }
 
 export const updateTasksOrderTC = (oldIndex: number, newIndex: number): ThunkDispatchType => async (dispatch, getState) => {
     // First, make local changes in state, then synchronize them on the server
-    dispatch(changeTaskOrderAC(oldIndex, newIndex))
+    dispatch(changeTaskOrderAC({oldIndex, newIndex}))
 
     const {tasks} = getState().todolist
-    dispatch(setIsSyncing(true))
+    dispatch(setIsSyncing({isSyncing: true}))
     try {
         await TASKS_API.updateOrder(tasks)
     } catch {
         dispatch(setNotificationMessageAC({message: NOTIFICATIONS.SYNC_ERROR, type: "error"}))
     } finally {
-        dispatch(setIsSyncing(false))
+        dispatch(setIsSyncing({isSyncing: false}))
     }
 }
 
 export const toggleTaskStatusTC = (id: string): ThunkDispatchType => async (dispatch, getState) => {
-    dispatch(toggleTaskStatusAC(id))
+    dispatch(toggleTaskStatusAC({id}))
     const {tasks} = getState().todolist
 
     const task = tasks.find(task => task.id === id)
 
     // Trying to sync
     if (task) {
-        dispatch(setIsSyncing(true))
+        dispatch(setIsSyncing({isSyncing: true}))
         try {
             await TASKS_API.update(id, task)
         } catch {
             // Returning the previous state
-            dispatch(toggleTaskStatusAC(id))
+            dispatch(toggleTaskStatusAC({id}))
             dispatch(setNotificationMessageAC({message: NOTIFICATIONS.SYNC_ERROR, type: "error"}))
         } finally {
-            dispatch(setIsSyncing(false))
+            dispatch(setIsSyncing({isSyncing: false}))
         }
     }
 }
@@ -214,26 +144,26 @@ export const editTaskTitleTC = (id: string, title: string): ThunkDispatchType =>
     const originalTaskTitle = originalTask && originalTask.title
 
     // Change local value
-    dispatch(editTaskTitleAC(id, title))
+    dispatch(editTaskTitleAC({id, title}))
     const modifiedTasks = getState().todolist.tasks
     const modifiedTask = modifiedTasks.find(task => task.id === id)
 
     // Trying to sync
     if (modifiedTask) {
-        dispatch(setIsSyncing(true))
+        dispatch(setIsSyncing({isSyncing: true}))
         try {
             await TASKS_API.update(id, modifiedTask)
                 .catch(() => {
                     console.log("ERROR")
-                    dispatch(editTaskTitleAC(id, originalTaskTitle ? originalTaskTitle : title))
+                    dispatch(editTaskTitleAC({id, title: originalTaskTitle ? originalTaskTitle : title}))
                     dispatch(setNotificationMessageAC({message: NOTIFICATIONS.SYNC_ERROR, type: "error"}))
                 })
         } catch {
             // Returning the previous state
-            dispatch(editTaskTitleAC(id, originalTaskTitle ? originalTaskTitle : title))
+            dispatch(editTaskTitleAC({id, title: originalTaskTitle ? originalTaskTitle : title}))
             dispatch(setNotificationMessageAC({message: NOTIFICATIONS.SYNC_ERROR, type: "error"}))
         } finally {
-            dispatch(setIsSyncing(false))
+            dispatch(setIsSyncing({isSyncing: false}))
         }
     }
 }
@@ -241,27 +171,30 @@ export const editTaskTitleTC = (id: string, title: string): ThunkDispatchType =>
 export const addTaskTC = (title: string): ThunkDispatchType => async (dispatch, getState) => {
     const order = getState().todolist.tasks.length + 1
 
-    dispatch(setIsSyncing(true))
+    dispatch(setIsSyncing({isSyncing: true}))
     try {
         const task: TaskDataType = await TASKS_API.add(title, order)
-        dispatch(addTaskAC(task))
+        dispatch(addTaskAC({task}))
     } catch {
         dispatch(setNotificationMessageAC({message: NOTIFICATIONS.SYNC_ERROR, type: "error"}))
     } finally {
-        dispatch(setIsSyncing(false))
+        dispatch(setIsSyncing({isSyncing: false}))
     }
 }
 
 export const removeTaskTC = (id: string): ThunkDispatchType => async (dispatch) => {
-    dispatch(setIsSyncing(true))
+    dispatch(setIsSyncing({isSyncing: true}))
     try {
         await TASKS_API.delete(id)
-        dispatch(removeTaskAC(id))
+        dispatch(removeTaskAC({id}))
     } catch {
         dispatch(setNotificationMessageAC({message: NOTIFICATIONS.SYNC_ERROR, type: "error"}))
     } finally {
-        dispatch(setIsSyncing(false))
+        dispatch(setIsSyncing({isSyncing: false}))
     }
 }
 
+
+// ---------------------------------------------------------------------------------------------------------------------
+const todolistReducer = slice.reducer
 export default todolistReducer

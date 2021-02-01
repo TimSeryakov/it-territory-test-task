@@ -1,76 +1,46 @@
-// ---------------------------------------------------------------------------------------------------------------------
-// Init State
-// ---------------------------------------------------------------------------------------------------------------------
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+// init state
 export const initialState: NotificationStateType = {
     notification: null
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------------------------------------------------
-
+// types
 export type NotificationStateType = {
     notification: { message: string, type: NotificationMessageType } | null
 }
 
 export type NotificationMessageType = "info" | "success" | "warning" | "error" | "default"
 
-// ---------------------------------------------------------------------------------------------------------------------
-// Action Creators Types
-// ---------------------------------------------------------------------------------------------------------------------
-
+// action creators types
 export type NotificationActionTypes =
     | ReturnType<typeof setNotificationMessageAC>
     | ReturnType<typeof setNotificationMessageEmptyAC>
 
-// ---------------------------------------------------------------------------------------------------------------------
-// Enum as const
-// ---------------------------------------------------------------------------------------------------------------------
-
-enum NOTIFICATION {
-    SET_NOTIFICATION = "NOTIFICATION/SET_NOTIFICATION",
-    SET_NOTIFICATION_EMPTY = "NOTIFICATION/SET_NOTIFICATION_EMPTY"
-}
-
-//
 export enum NOTIFICATIONS {
-    SYNC_ERROR = "Error while sync data"
+    SYNC_ERROR = "Error while syncing data"
 }
 
-// ---------------------------------------------------------------------------------------------------------------------
-// Reducer
-// ---------------------------------------------------------------------------------------------------------------------
-
-const notificationReducer = (state: NotificationStateType = initialState, action: NotificationActionTypes): NotificationStateType => {
-    switch (action.type) {
-        case NOTIFICATION.SET_NOTIFICATION: {
-            return {
-                notification: {message: action.payload.message, type: action.payload.type}
-            }
+// reducer
+const slice = createSlice({
+    name: "notifications",
+    initialState: initialState,
+    reducers: {
+        setNotificationMessageAC(state, action: PayloadAction<{message: string, type: NotificationMessageType}>) {
+            state.notification = { message: action.payload.message, type: action.payload.type }
+        },
+        setNotificationMessageEmptyAC(state, action: PayloadAction<undefined>) { // или PayloadAction<undefined | void>
+            state.notification = null
         }
-        case NOTIFICATION.SET_NOTIFICATION_EMPTY: {
-            return {
-                notification: null,
-            }
-        }
-        default:
-            return state
     }
-}
+})
+
+// достаём и экспортируем actions
+export const {setNotificationMessageAC, setNotificationMessageEmptyAC} = slice.actions
+const notificationReducer = slice.reducer
+
 
 // ---------------------------------------------------------------------------------------------------------------------
-// Action Creators
-// ---------------------------------------------------------------------------------------------------------------------
-
-export const setNotificationMessageAC = (message: string, type: NotificationMessageType) =>
-    ({ type: NOTIFICATION.SET_NOTIFICATION, payload: { message, type } }) as const
-
-export const setNotificationMessageEmptyAC = () =>
-    ({type: NOTIFICATION.SET_NOTIFICATION_EMPTY}) as const
-
-// ---------------------------------------------------------------------------------------------------------------------
-
 export default notificationReducer
 
 

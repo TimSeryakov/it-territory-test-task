@@ -165,7 +165,7 @@ export const requestTasksTC = (): ThunkDispatchType => async (dispatch) => {
         const res = await TASKS_API.get()
         dispatch(setTasksAC(res))
     } catch {
-        dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
+        dispatch(setNotificationMessageAC({message: NOTIFICATIONS.SYNC_ERROR, type: "error"}))
     } finally {
         dispatch(setIsSyncing(false))
     }
@@ -180,7 +180,7 @@ export const updateTasksOrderTC = (oldIndex: number, newIndex: number): ThunkDis
     try {
         await TASKS_API.updateOrder(tasks)
     } catch {
-        dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
+        dispatch(setNotificationMessageAC({message: NOTIFICATIONS.SYNC_ERROR, type: "error"}))
     } finally {
         dispatch(setIsSyncing(false))
     }
@@ -200,7 +200,7 @@ export const toggleTaskStatusTC = (id: string): ThunkDispatchType => async (disp
         } catch {
             // Returning the previous state
             dispatch(toggleTaskStatusAC(id))
-            dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
+            dispatch(setNotificationMessageAC({message: NOTIFICATIONS.SYNC_ERROR, type: "error"}))
         } finally {
             dispatch(setIsSyncing(false))
         }
@@ -226,12 +226,12 @@ export const editTaskTitleTC = (id: string, title: string): ThunkDispatchType =>
                 .catch(() => {
                     console.log("ERROR")
                     dispatch(editTaskTitleAC(id, originalTaskTitle ? originalTaskTitle : title))
-                    dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
+                    dispatch(setNotificationMessageAC({message: NOTIFICATIONS.SYNC_ERROR, type: "error"}))
                 })
         } catch {
             // Returning the previous state
             dispatch(editTaskTitleAC(id, originalTaskTitle ? originalTaskTitle : title))
-            dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
+            dispatch(setNotificationMessageAC({message: NOTIFICATIONS.SYNC_ERROR, type: "error"}))
         } finally {
             dispatch(setIsSyncing(false))
         }
@@ -246,7 +246,7 @@ export const addTaskTC = (title: string): ThunkDispatchType => async (dispatch, 
         const task: TaskDataType = await TASKS_API.add(title, order)
         dispatch(addTaskAC(task))
     } catch {
-        dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
+        dispatch(setNotificationMessageAC({message: NOTIFICATIONS.SYNC_ERROR, type: "error"}))
     } finally {
         dispatch(setIsSyncing(false))
     }
@@ -258,7 +258,7 @@ export const removeTaskTC = (id: string): ThunkDispatchType => async (dispatch) 
         await TASKS_API.delete(id)
         dispatch(removeTaskAC(id))
     } catch {
-        dispatch(setNotificationMessageAC(NOTIFICATIONS.SYNC_ERROR, "error"))
+        dispatch(setNotificationMessageAC({message: NOTIFICATIONS.SYNC_ERROR, type: "error"}))
     } finally {
         dispatch(setIsSyncing(false))
     }

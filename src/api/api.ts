@@ -19,7 +19,7 @@ export const TASKS_API = {
         const newTaskRef = tasksCollectionRef.doc()
         const id = newTaskRef.id
         newTaskRef.set({title, order, status: "active"})
-        return ({id, title, order, status: "active" as TaskStatusType})
+        return {id, title, order, status: "active" as TaskStatusType}
     },
     delete(id: string) {
         return tasksCollectionRef.doc(id).delete()

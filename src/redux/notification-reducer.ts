@@ -1,12 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 
-// init state
-// ---------------------------------------------------------------------------------------------------------------------
-export const initialState: NotificationStateType = {
-    notification: null
-}
-
 // types
 // ---------------------------------------------------------------------------------------------------------------------
 export type NotificationStateType = {
@@ -29,7 +23,9 @@ export enum NOTIFICATIONS {
 // ---------------------------------------------------------------------------------------------------------------------
 const slice = createSlice({
     name: "notifications",
-    initialState: initialState,
+    initialState: {
+        notification: null
+    } as NotificationStateType,
     reducers: {
         setNotificationMessageAC(state, action: PayloadAction<{ message: string, type: NotificationMessageType }>) {
             state.notification = { message: action.payload.message, type: action.payload.type }

@@ -21,7 +21,7 @@ export const TodoList = () => {
         dispatch(editTaskTitleTC(id, newValue))
     }
     const toggleStatus = (id: string) => {
-        dispatch(toggleTaskStatusTC(id))
+        dispatch(toggleTaskStatusTC({id}))
     }
     const deleteTask = (id: string) => {
         dispatch(removeTask(id))
@@ -42,7 +42,7 @@ export const TodoList = () => {
                         lockVertically
                         values={tasks}
                         onChange={({oldIndex, newIndex}) =>
-                            dispatch(updateTasksOrderTC(oldIndex, newIndex))
+                            dispatch(updateTasksOrderTC({data: {oldIndex, newIndex}}))
                         }
                         renderList={({children, props}) => {
                             return <ul {...props}>
@@ -92,7 +92,7 @@ const AddTaskInput = () => {
 
     const addTask = () => {
         if (typedText) {
-            dispatch(addTaskTC(typedText))
+            dispatch(addTaskTC({title: typedText}))
             setTypedText(null)
         }
     }
@@ -103,7 +103,7 @@ const AddTaskInput = () => {
 
     const inputOnKeyPressHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter" && typedText) {
-            dispatch(addTaskTC(typedText))
+            dispatch(addTaskTC({title: typedText}))
             setTypedText(null)
         }
     }

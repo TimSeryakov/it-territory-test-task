@@ -2,10 +2,10 @@ import React, {useEffect} from 'react'
 import {Redirect, Route, Switch} from 'react-router-dom'
 import {Page404} from './Page404/Page404'
 import {TodoList} from './TodoList/TodoList'
-import {useDispatch, useSelector} from 'react-redux'
+import {useSelector} from 'react-redux'
 import {requestTasks} from '../redux/todolist-reducer'
 import {toast} from 'react-toastify'
-import {RootStateType} from '../redux/store'
+import {RootStateType, useAppDispatch} from '../redux/store'
 import {makeToast} from '../helpers/makeToast'
 import 'react-toastify/dist/ReactToastify.min.css'
 import {setNotificationMessageEmptyAC} from '../redux/notification-reducer'
@@ -15,7 +15,7 @@ toast.configure()
 
 export const App = () => {
     const {notification} = useSelector((state: RootStateType) => state.notification)
-    const dispatch = useDispatch()
+    const dispatch = useAppDispatch()
 
     // Put the toast in the toaster
     useEffect(() => {

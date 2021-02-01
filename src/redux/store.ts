@@ -3,14 +3,17 @@ import notificationReducer, {NotificationActionTypes} from './notification-reduc
 import todolistReducer, { TodoListActionTypes } from './todolist-reducer'
 import thunkMiddleware, {ThunkAction} from 'redux-thunk'
 import {configureStore} from '@reduxjs/toolkit'
+import {useDispatch} from "react-redux";
 
 // export type RootStateType = {
 //     todolist: TodoListStateType
 //     notification: NotificationStateType
 // }
-export type RootStateType = ReturnType<typeof store.getState>
+
 // export type RootStateType = ReturnType<typeof rootReducer>
-// export type AppDispatch = typeof store.dispatch
+export type RootStateType = ReturnType<typeof store.getState>
+type AppDispatchType = typeof store.dispatch
+export const useAppDispatch = () => useDispatch<AppDispatchType>()
 
 export type RootActionsTypes =
     | TodoListActionTypes

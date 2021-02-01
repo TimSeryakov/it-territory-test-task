@@ -3,7 +3,7 @@ import {Redirect, Route, Switch} from 'react-router-dom'
 import {Page404} from './Page404/Page404'
 import {TodoList} from './TodoList/TodoList'
 import {useDispatch, useSelector} from 'react-redux'
-import {requestTasksTC} from '../redux/todolist-reducer'
+import {requestTasks} from '../redux/todolist-reducer'
 import {toast} from 'react-toastify'
 import {RootStateType} from '../redux/store'
 import {makeToast} from '../helpers/makeToast'
@@ -26,7 +26,7 @@ export const App = () => {
     }, [dispatch, notification])
 
     useEffect(() => {
-        dispatch(requestTasksTC())
+        dispatch(requestTasks())
     }, [dispatch])
 
     return (

@@ -5,7 +5,7 @@ import {useDispatch, useSelector} from 'react-redux'
 import {
     addTaskTC,
     editTaskTitleTC,
-    removeTaskTC,
+    removeTask,
     toggleTaskStatusTC,
     updateTasksOrderTC
 } from '../../redux/todolist-reducer'
@@ -23,8 +23,8 @@ export const TodoList = () => {
     const toggleStatus = (id: string) => {
         dispatch(toggleTaskStatusTC(id))
     }
-    const removeTask = (id: string) => {
-        dispatch(removeTaskTC(id))
+    const deleteTask = (id: string) => {
+        dispatch(removeTask(id))
     }
 
     return (
@@ -55,7 +55,7 @@ export const TodoList = () => {
                                              status={value.status}
                                              title={value.title}
                                              order={value.order}
-                                             removeTask={removeTask}
+                                             removeTask={deleteTask}
                                              toggleStatus={toggleStatus}
                                              editTask={editTask}
                                              focused={isDragged || isSelected}
@@ -73,7 +73,7 @@ export const TodoList = () => {
 
 const Header = (props: { isFetching: boolean }) => {
     return (
-        <header className="text-gb-text opacity-40 focus:outline-none mb-14 relative">
+        <header className="text-gb-text opacity-40 focus:outline-none mb-14 relative px-3">
             <a href="https://youtu.be/5coefdzLlYc" target="_blank" rel="noreferrer" className="focus:outline-none">
                 <h1 className="text-4xl mb-3">Watcha gonna do, whatcha gonna do</h1>
                 <h2 className="text-xl my-1">When they come for you</h2>

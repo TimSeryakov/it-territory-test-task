@@ -2,20 +2,21 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 
 // init state
+// ---------------------------------------------------------------------------------------------------------------------
 export const initialState: NotificationStateType = {
     notification: null
 }
 
-
 // types
+// ---------------------------------------------------------------------------------------------------------------------
 export type NotificationStateType = {
     notification: { message: string, type: NotificationMessageType } | null
 }
 
 export type NotificationMessageType = "info" | "success" | "warning" | "error" | "default"
 
-
 // action creators types
+// ---------------------------------------------------------------------------------------------------------------------
 export type NotificationActionTypes =
     | ReturnType<typeof setNotificationMessageAC>
     | ReturnType<typeof setNotificationMessageEmptyAC>
@@ -24,8 +25,8 @@ export enum NOTIFICATIONS {
     SYNC_ERROR = "Error while syncing data"
 }
 
-
 // reducer
+// ---------------------------------------------------------------------------------------------------------------------
 const slice = createSlice({
     name: "notifications",
     initialState: initialState,
@@ -39,8 +40,8 @@ const slice = createSlice({
     }
 })
 
-
 // actions creators export
+// ---------------------------------------------------------------------------------------------------------------------
 export const {setNotificationMessageAC, setNotificationMessageEmptyAC} = slice.actions
 
 
